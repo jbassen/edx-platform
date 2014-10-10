@@ -363,6 +363,11 @@ require(["domReady!", "jquery", "js/models/settings/course_details", "js/views/s
                   <input type="text" class="short time" id="course-effort" placeholder="HH:MM" />
                   <span class="tip tip-inline">${_("Time spent on all course work")}</span>
                 </li>
+                <li class="field text" id="field-course-price">
+                  <label for="course-effort">${_("Price of the Course")}</label>
+                  <input type="text" class="short time" id="course-price" placeholder="Free" />
+                  <span class="tip tip-inline">${_("Cost for materials and fees for the course. (Include the currency symbol in this field.)")}</span>
+                </li>
               </ol>
             </section>
           % endif

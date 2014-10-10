@@ -548,7 +548,7 @@
     // specific fields - requirements
     &.requirements {
 
-      #field-course-effort {
+      #field-course-effort, #field-course-price {
         width: flex-grid(3, 9);
       }
     }

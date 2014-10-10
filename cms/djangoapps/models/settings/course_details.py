@@ -31,6 +31,7 @@ class CourseDetails(object):
         self.post_enrollment_email_subject = "Thanks for Enrolling in {}".format(self.course_id)
         self.intro_video = None  # a video pointer
         self.effort = None  # int hours/week
+        self.price = ""
         self.course_image_name = ""
         self.course_image_asset_path = ""  # URL of the course image
         self.enable_enrollment_email = False
@@ -94,6 +95,12 @@ class CourseDetails(object):
         temploc = course_key.make_usage_key('about', 'effort')
         try:
             course_details.effort = modulestore().get_item(temploc).data
+        except ItemNotFoundError:
+            pass
+
+        temploc = course_key.make_usage_key('about', 'price')
+        try:
+            course_details.price = modulestore().get_item(temploc).data
         except ItemNotFoundError:
             pass
 
@@ -193,7 +200,7 @@ class CourseDetails(object):
 
         # NOTE: below auto writes to the db w/o verifying that any of the fields actually changed
         # to make faster, could compare against db or could have client send over a list of which fields changed.
-        for about_type in ['syllabus', 'overview', 'effort', 'short_description', 
+        for about_type in ['syllabus', 'overview', 'effort', 'price', 'short_description', 
                            'pre_enrollment_email', 'post_enrollment_email', 'pre_enrollment_email_subject', 
                            'post_enrollment_email_subject']:
             cls.update_about_item(course_key, about_type, jsondict[about_type], descriptor, user)
