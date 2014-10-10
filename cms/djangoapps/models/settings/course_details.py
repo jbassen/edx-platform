@@ -12,6 +12,18 @@ from xmodule.fields import Date
 from xmodule.modulestore.django import modulestore
 from edxmako.shortcuts import render_to_string
 
+about_attributes = [
+    'syllabus',
+    'short_description',
+    'overview',
+    'pre_enrollment_email_subject',
+    'post_enrollment_email_subject',
+    'pre_enrollment_email',
+    'post_enrollment_email',
+    'effort',
+    'price',
+]
+
 class CourseDetails(object):
     def __init__(self, org, course_id, run):
         # still need these for now b/c the client's screen shows these 3 fields
@@ -37,6 +49,15 @@ class CourseDetails(object):
         self.enable_enrollment_email = False
 
     @classmethod
+    def _fetch_about_attribute(cls, course_key, attribute, default=None):
+        usage_key = course_key.make_usage_key('about', attribute)
+        try:
+            value = modulestore().get_item(usage_key).data
+        except ItemNotFoundError:
+            value = default
+        return value
+
+    @classmethod
     def fetch(cls, course_key):
         """
         Fetch the course details for the given course from persistence and return a CourseDetails model.
@@ -52,58 +73,13 @@ class CourseDetails(object):
         course_details.course_image_asset_path = course_image_url(descriptor)
         course_details.enable_enrollment_email = descriptor.enable_enrollment_email
 
-        temploc = course_key.make_usage_key('about', 'syllabus')
-        try:
-            course_details.syllabus = modulestore().get_item(temploc).data
-        except ItemNotFoundError:
-            pass
+        for attribute in about_attributes:
+            value = cls._fetch_about_attribute(course_key, attribute)
+            if value:
+                setattr(course_details, attribute, value)
 
-        temploc = course_key.make_usage_key('about', 'short_description')
-        try:
-            course_details.short_description = modulestore().get_item(temploc).data
-        except ItemNotFoundError:
-            pass
-
-        temploc = course_key.make_usage_key('about', 'overview')
-        try:
-            course_details.overview = modulestore().get_item(temploc).data
-        except ItemNotFoundError:
-            pass
-        temploc = course_key.make_usage_key('about', 'pre_enrollment_email_subject')
-        try:
-            course_details.pre_enrollment_email_subject = modulestore().get_item(temploc).data
-        except ItemNotFoundError:
-            pass
-        temploc = course_key.make_usage_key('about', 'post_enrollment_email_subject')
-        try:
-            course_details.post_enrollment_email_subject = modulestore().get_item(temploc).data
-        except ItemNotFoundError:
-            pass
-
-        temploc = course_key.make_usage_key('about', 'pre_enrollment_email')
-        try:
-            course_details.pre_enrollment_email = modulestore().get_item(temploc).data
-        except ItemNotFoundError:
-            pass
-
-        temploc = course_key.make_usage_key('about', 'post_enrollment_email')
-        try:
-            course_details.post_enrollment_email = modulestore().get_item(temploc).data
-        except ItemNotFoundError:
-            pass
-
-        temploc = course_key.make_usage_key('about', 'effort')
-        try:
-            course_details.effort = modulestore().get_item(temploc).data
-        except ItemNotFoundError:
-            pass
-
-        temploc = course_key.make_usage_key('about', 'price')
-        try:
-            course_details.price = modulestore().get_item(temploc).data
-        except ItemNotFoundError:
-            pass
-
+        # This case must be handled separately as it post-processes the
+        # value and then stores it with an alternate key name.
         temploc = course_key.make_usage_key('about', 'video')
         try:
             raw_video = modulestore().get_item(temploc).data
@@ -200,10 +176,8 @@ class CourseDetails(object):
 
         # NOTE: below auto writes to the db w/o verifying that any of the fields actually changed
         # to make faster, could compare against db or could have client send over a list of which fields changed.
-        for about_type in ['syllabus', 'overview', 'effort', 'price', 'short_description', 
-                           'pre_enrollment_email', 'post_enrollment_email', 'pre_enrollment_email_subject', 
-                           'post_enrollment_email_subject']:
-            cls.update_about_item(course_key, about_type, jsondict[about_type], descriptor, user)
+        for attribute in about_attributes:
+            cls.update_about_item(course_key, attribute, jsondict[attribute], descriptor, user)
 
         recomposed_video_tag = CourseDetails.recompose_video_tag(jsondict['intro_video'])
         cls.update_about_item(course_key, 'video', recomposed_video_tag, descriptor, user)
