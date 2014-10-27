@@ -34,9 +34,8 @@ class CourseGradingModel(object):
         index = int(index)
         if len(descriptor.raw_grader) > index:
             return CourseGradingModel.jsonize_grader(index, descriptor.raw_grader[index])
-
-        # return empty model
         else:
+            # return empty model
             return {"id": index,
                     "type": "",
                     "min_count": 0,
