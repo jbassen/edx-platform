@@ -1,7 +1,6 @@
 import re
 import logging
 import datetime
-import json
 from json.encoder import JSONEncoder
 
 from opaque_keys.edx.locations import Location
@@ -175,7 +174,7 @@ class CourseDetails(object):
 
 
 # TODO move to a more general util?
-class CourseSettingsEncoder(json.JSONEncoder):
+class CourseSettingsEncoder(JSONEncoder):
     """
     Serialize CourseDetails, CourseGradingModel, datetime, and old Locations
     """
