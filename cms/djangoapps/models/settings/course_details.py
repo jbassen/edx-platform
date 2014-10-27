@@ -103,54 +103,32 @@ class CourseDetails(object):
         module_store = modulestore()
         descriptor = module_store.get_course(course_key)
 
-        dirty = False
-
         # In the descriptor's setter, the date is converted to JSON using Date's to_json method.
         # Calling to_json on something that is already JSON doesn't work. Since reaching directly
         # into the model is nasty, convert the JSON Date to a Python date, which is what the
         # setter expects as input.
         date = Date()
 
-        if 'start_date' in jsondict:
-            converted = date.from_json(jsondict['start_date'])
-        else:
+        def noop(value):
+            return value
+
+        def try_set_descriptor(json_dict, json_key, descriptor, descriptor_attribute, convert=date.from_json):
             converted = None
-        if converted != descriptor.start:
-            dirty = True
-            descriptor.start = converted
+            is_dirty = False
+            if json_key in json_dict:
+                converted = convert(json_dict[json_key])
+            if converted != getattr(descriptor, descriptor_attribute):
+                setattr(descriptor, descriptor_attribute, converted)
+                is_dirty = True
+            return is_dirty
 
-        if 'end_date' in jsondict:
-            converted = date.from_json(jsondict['end_date'])
-        else:
-            converted = None
+        is_dirty = try_set_descriptor(jsondict, 'start_date', descriptor, 'start') or is_dirty
+        is_dirty = try_set_descriptor(jsondict, 'end_date', descriptor, 'end') or is_dirty
+        is_dirty = try_set_descriptor(jsondict, 'enrollment_start', descriptor, 'enrollment_start') or is_dirty
+        is_dirty = try_set_descriptor(jsondict, 'enrollment_end', descriptor, 'enrollment_end') or is_dirty
+        is_dirty = try_set_descriptor(jsondict, 'course_image_name', descriptor, 'course_image', noop) or is_dirty
 
-        if converted != descriptor.end:
-            dirty = True
-            descriptor.end = converted
-
-        if 'enrollment_start' in jsondict:
-            converted = date.from_json(jsondict['enrollment_start'])
-        else:
-            converted = None
-
-        if converted != descriptor.enrollment_start:
-            dirty = True
-            descriptor.enrollment_start = converted
-
-        if 'enrollment_end' in jsondict:
-            converted = date.from_json(jsondict['enrollment_end'])
-        else:
-            converted = None
-
-        if converted != descriptor.enrollment_end:
-            dirty = True
-            descriptor.enrollment_end = converted
-
-        if 'course_image_name' in jsondict and jsondict['course_image_name'] != descriptor.course_image:
-            descriptor.course_image = jsondict['course_image_name']
-            dirty = True
-
-        if dirty:
+        if is_dirty:
             module_store.update_item(descriptor, user.id)
 
         # NOTE: below auto writes to the db w/o verifying that any of the fields actually changed
