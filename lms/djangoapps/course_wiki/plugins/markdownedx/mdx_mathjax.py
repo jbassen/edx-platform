@@ -21,9 +21,9 @@ class MathJaxPattern(markdown.inlinepatterns.Pattern):
 
 
 class MathJaxExtension(markdown.Extension):
-    def extendMarkdown(self, md, md_globals):
+    def extendMarkdown(self, markdown, md_globals):
         # Needs to come before escape matching because \ is pretty important in LaTeX
-        md.inlinePatterns.add('mathjax', MathJaxPattern(), '<escape')
+        markdown.inlinePatterns.add('mathjax', MathJaxPattern(), '<escape')
 
 
 def makeExtension(configs=None):
