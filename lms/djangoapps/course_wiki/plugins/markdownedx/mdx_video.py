@@ -190,71 +190,86 @@ class VideoExtension(markdown.Extension):
 
 
 class Bliptv(markdown.inlinepatterns.Pattern):
-    def handleMatch(self, m):
-        url = 'http://blip.tv/scripts/flash/showplayer.swf?file=http://blip.tv/file/get/%s' % m.group('bliptvfile')
+    def handleMatch(self, match):
+        url = 'http://blip.tv/scripts/flash/showplayer.swf?file=http://blip.tv/file/get/{video_id}'.format(
+            video_id=match.group('bliptvfile'),
+        )
         width = self.ext.config['bliptv_width'][0]
         height = self.ext.config['bliptv_height'][0]
         return flash_object(url, width, height)
 
 
 class Dailymotion(markdown.inlinepatterns.Pattern):
-    def handleMatch(self, m):
-        url = 'http://www.dailymotion.com/swf/%s' % m.group('dailymotionid').split('/')[-1]
+    def handleMatch(self, match):
+        url = 'http://www.dailymotion.com/swf/{video_id}'.format(
+            video_id=match.group('dailymotionid').split('/')[-1],
+        )
         width = self.ext.config['dailymotion_width'][0]
         height = self.ext.config['dailymotion_height'][0]
         return flash_object(url, width, height)
 
 
 class Gametrailers(markdown.inlinepatterns.Pattern):
-    def handleMatch(self, m):
-        url = 'http://www.gametrailers.com/remote_wrap.php?mid=%s' % \
-            m.group('gametrailersid').split('/')[-1]
+    def handleMatch(self, match):
+        url = 'http://www.gametrailers.com/remote_wrap.php?mid={video_id}'.format(
+            video_id=match.group('gametrailersid').split('/')[-1],
+        )
         width = self.ext.config['gametrailers_width'][0]
         height = self.ext.config['gametrailers_height'][0]
         return flash_object(url, width, height)
 
 
 class Metacafe(markdown.inlinepatterns.Pattern):
-    def handleMatch(self, m):
-        url = 'http://www.metacafe.com/fplayer/%s.swf' % m.group('metacafeid')
+    def handleMatch(self, match):
+        url = 'http://www.metacafe.com/fplayer/{video_id}.swf'.format(
+            video_id=match.group('metacafeid'),
+        )
         width = self.ext.config['metacafe_width'][0]
         height = self.ext.config['metacafe_height'][0]
         return flash_object(url, width, height)
 
 
 class Veoh(markdown.inlinepatterns.Pattern):
-    def handleMatch(self, m):
-        url = 'http://www.veoh.com/videodetails2.swf?permalinkId=%s' % m.group('veohid')
+    def handleMatch(self, match):
+        url = 'http://www.veoh.com/videodetails2.swf?permalinkId={video_id}'.format(
+            video_id=match.group('veohid'),
+        )
         width = self.ext.config['veoh_width'][0]
         height = self.ext.config['veoh_height'][0]
         return flash_object(url, width, height)
 
 
 class Vimeo(markdown.inlinepatterns.Pattern):
-    def handleMatch(self, m):
-        url = 'http://vimeo.com/moogaloop.swf?clip_id=%s&amp;server=vimeo.com' % m.group('vimeoid')
+    def handleMatch(self, match):
+        url = 'http://vimeo.com/moogaloop.swf?clip_id={video_id}&amp;server=vimeo.com'.format(
+            video_id=match.group('vimeoid'),
+        )
         width = self.ext.config['vimeo_width'][0]
         height = self.ext.config['vimeo_height'][0]
         return flash_object(url, width, height)
 
 
 class Yahoo(markdown.inlinepatterns.Pattern):
-    def handleMatch(self, m):
+    def handleMatch(self, match):
         url = "http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.40"
         width = self.ext.config['yahoo_width'][0]
         height = self.ext.config['yahoo_height'][0]
         obj = flash_object(url, width, height)
         param = etree.Element('param')
         param.set('name', 'flashVars')
-        param.set('value', "id=%s&vid=%s" % (m.group('yahooid'),
-                                             m.group('yahoovid')))
+        param.set('value', 'id={video_id}&vid={video}'.format(
+            video_id=match.group('yahooid'),
+            video=match.group('yahoovid'),
+        ))
         obj.append(param)
         return obj
 
 
 class Youtube(markdown.inlinepatterns.Pattern):
-    def handleMatch(self, m):
-        url = 'http://www.youtube.com/v/%s' % m.group('youtubeargs')
+    def handleMatch(self, match):
+        url = 'http://www.youtube.com/v/{video_id}'.format(
+            video_id=match.group('youtubeargs'),
+        )
         width = self.ext.config['youtube_width'][0]
         height = self.ext.config['youtube_height'][0]
         return flash_object(url, width, height)
