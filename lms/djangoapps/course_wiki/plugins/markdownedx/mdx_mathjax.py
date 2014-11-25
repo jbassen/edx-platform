@@ -14,9 +14,9 @@ class MathJaxPattern(markdown.inlinepatterns.Pattern):
     def __init__(self):
         markdown.inlinepatterns.Pattern.__init__(self, r'(?<!\\)(\$\$?)(.+?)\2')
 
-    def handleMatch(self, m):
+    def handleMatch(self, match):
         el = etree.Element('span')
-        el.text = AtomicString(m.group(2) + m.group(3) + m.group(2))
+        el.text = AtomicString(match.group(2) + match.group(3) + match.group(2))
         return el
 
 
