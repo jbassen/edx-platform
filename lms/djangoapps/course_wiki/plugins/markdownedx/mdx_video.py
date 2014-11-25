@@ -164,28 +164,28 @@ class VideoExtension(markdown.Extension):
         for key, value in configs:
             self.setConfig(key, value)
 
-    def add_inline(self, md, name, klass, re):
+    def add_inline(self, markdown, name, klass, re):
         pattern = klass(re)
-        pattern.md = md
+        pattern.md = markdown
         pattern.ext = self
-        md.inlinePatterns.add(name, pattern, "<reference")
+        markdown.inlinePatterns.add(name, pattern, "<reference")
 
-    def extendMarkdown(self, md, md_globals):
-        self.add_inline(md, 'bliptv', Bliptv,
+    def extendMarkdown(self, markdown, md_globals):
+        self.add_inline(markdown, 'bliptv', Bliptv,
                         r'([^(]|^)http://(\w+\.|)blip.tv/file/get/(?P<bliptvfile>\S+.flv)')
-        self.add_inline(md, 'dailymotion', Dailymotion,
+        self.add_inline(markdown, 'dailymotion', Dailymotion,
                         r'([^(]|^)http://www\.dailymotion\.com/(?P<dailymotionid>\S+)')
-        self.add_inline(md, 'gametrailers', Gametrailers,
+        self.add_inline(markdown, 'gametrailers', Gametrailers,
                         r'([^(]|^)http://www.gametrailers.com/video/[a-z0-9-]+/(?P<gametrailersid>\d+)')
-        self.add_inline(md, 'metacafe', Metacafe,
+        self.add_inline(markdown, 'metacafe', Metacafe,
                         r'([^(]|^)http://www\.metacafe\.com/watch/(?P<metacafeid>\S+)/')
-        self.add_inline(md, 'veoh', Veoh,
+        self.add_inline(markdown, 'veoh', Veoh,
                         r'([^(]|^)http://www\.veoh\.com/\S*(#watch%3D|watch/)(?P<veohid>\w+)')
-        self.add_inline(md, 'vimeo', Vimeo,
+        self.add_inline(markdown, 'vimeo', Vimeo,
                         r'([^(]|^)http://(www.|)vimeo\.com/(?P<vimeoid>\d+)\S*')
-        self.add_inline(md, 'yahoo', Yahoo,
+        self.add_inline(markdown, 'yahoo', Yahoo,
                         r'([^(]|^)http://video\.yahoo\.com/watch/(?P<yahoovid>\d+)/(?P<yahooid>\d+)')
-        self.add_inline(md, 'youtube', Youtube,
+        self.add_inline(markdown, 'youtube', Youtube,
                         r'([^(]|^)http://www\.youtube\.com/watch\?\S*v=(?P<youtubeargs>[A-Za-z0-9_&=-]+)\S*')
 
 
