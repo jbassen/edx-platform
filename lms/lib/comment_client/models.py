@@ -99,13 +99,13 @@ class Model(object):
         return cls(id=id)
 
     def _update_from_response(self, response_data):
-        for k, v in response_data.items():
-            if k in self.accessible_fields:
-                self.__setattr__(k, v)
+        for key, value in response_data.items():
+            if key in self.accessible_fields:
+                self.__setattr__(key, value)
             else:
                 log.warning(
                     "Unexpected field {field_name} in model {model_name}".format(
-                        field_name=k,
+                        field_name=key,
                         model_name=self.__class__.__name__
                     )
                 )
