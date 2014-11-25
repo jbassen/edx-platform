@@ -91,11 +91,11 @@ def mock_software_secure_post(url, headers=None, data=None, **kwargs):
     data_dict = json.loads(data)
 
     # Basic sanity checking on the keys
-    EXPECTED_KEYS = [
+    expected_keys = [
         "EdX-ID", "ExpectedName", "PhotoID", "PhotoIDKey", "SendResponseTo",
         "UserPhoto", "UserPhotoKey",
     ]
-    for key in EXPECTED_KEYS:
+    for key in expected_keys:
         assert_true(
             data_dict.get(key),
             "'{}' must be present and not blank in JSON submitted to Software Secure".format(key)
@@ -163,18 +163,18 @@ class TestPhotoVerification(ModuleStoreTestCase):
         assert_raises(VerificationException, attempt.approve)
         assert_raises(VerificationException, attempt.deny)
 
-        DENY_ERROR_MSG = '[{"photoIdReasons": ["Not provided"]}]'
+        deny_error_message = '[{"photoIdReasons": ["Not provided"]}]'
 
         # must_retry
         attempt.status = "must_retry"
         attempt.system_error("System error")
         attempt.approve()
         attempt.status = "must_retry"
-        attempt.deny(DENY_ERROR_MSG)
+        attempt.deny(deny_error_message)
 
         # submitted
         attempt.status = "submitted"
-        attempt.deny(DENY_ERROR_MSG)
+        attempt.deny(deny_error_message)
         attempt.status = "submitted"
         attempt.approve()
 
@@ -182,11 +182,11 @@ class TestPhotoVerification(ModuleStoreTestCase):
         assert_raises(VerificationException, attempt.submit)
         attempt.approve()  # no-op
         attempt.system_error("System error")  # no-op, something processed it without error
-        attempt.deny(DENY_ERROR_MSG)
+        attempt.deny(deny_error_message)
 
         # denied
         assert_raises(VerificationException, attempt.submit)
-        attempt.deny(DENY_ERROR_MSG)  # no-op
+        attempt.deny(deny_error_message)  # no-op
         attempt.system_error("System error")  # no-op, something processed it without error
         attempt.approve()
 
