@@ -10,21 +10,32 @@ from django.utils.translation import get_language
 log = logging.getLogger(__name__)
 
 
-def strip_none(dic):
-    return dict([(k, v) for k, v in dic.iteritems() if v is not None])
+def strip_none(dictionary):
+    return dict([
+        (key, value)
+        for key, value in dictionary.iteritems()
+        if value is not None
+    ])
 
 
-def strip_blank(dic):
-    def _is_blank(v):
-        return isinstance(v, str) and len(v.strip()) == 0
-    return dict([(k, v) for k, v in dic.iteritems() if not _is_blank(v)])
+def strip_blank(dictionary):
+    def _is_blank(value):
+        return isinstance(value, str) and len(value.strip()) == 0
+    return dict([
+        (key, value)
+        for key, value in dictionary.iteritems()
+        if not _is_blank(value)
+    ])
 
 
-def extract(dic, keys):
+def extract(dictionary, keys):
     if isinstance(keys, str):
-        return strip_none({keys: dic.get(keys)})
+        return strip_none({keys: dictionary.get(keys)})
     else:
-        return strip_none({k: dic.get(k) for k in keys})
+        return strip_none({
+            key: dictionary.get(key)
+            for key in keys
+        })
 
 
 def merge_dict(dic1, dic2):
