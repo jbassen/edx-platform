@@ -131,8 +131,8 @@ class User(models.Model):
                 metric_action='model.retrieve',
                 metric_tags=self._metric_tags,
             )
-        except CommentClientRequestError as e:
-            if e.status_code == 404:
+        except CommentClientRequestError as error:
+            if error.status_code == 404:
                 # attempt to gracefully recover from a previous failure
                 # to sync this user to the comments service.
                 self.save()
