@@ -1997,14 +1997,7 @@ function add_schematic_handler(other_onload) {
     }
 }
 
-// ask each schematic input widget to update its value field for submission
-function prepare_schematics() {
-    var schematics = $('.schematic');
-    for (var i = schematics.length - 1; i >= 0; i--)
-	schematics[i].schematic.update_value();
-}
-
-schematic = (function() {
+var schematic = (function() {
     var background_style = 'rgb(220,220,220)';
     var element_style = 'rgb(255,255,255)';
     var thumb_style = 'rgb(128,128,128)';

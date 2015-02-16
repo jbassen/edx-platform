@@ -57,7 +57,11 @@ CodeMirror.defineMode("edx_markdown", function(cmCfg, modeCfg) {
 
   var circuit_formatter = {
     creator: function(text) {
+      var schematic_width = 400;
+      var schematic_height = 220;
       var circuit_value = text.match(circuitRE)[1]
+      var styling_height_delta = 2; //How many pixels are added to the height of the box because of styling (like a shadow)
+      var styling_width_delta = 2;
 
       circuit_value = escapeHtml(circuit_value);
 
