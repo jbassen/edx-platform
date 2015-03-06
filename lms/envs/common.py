@@ -57,7 +57,6 @@ PLATFORM_LINKEDIN_URL = "http://www.linkedin.com/company/YourPlatform"
 PLATFORM_GOOGLE_PLUS_URL = "https://plus.google.com/YourGooglePlusAccount/"
 
 
-COURSEWARE_ENABLED = True
 ENABLE_JASMINE = False
 
 DISCUSSION_SETTINGS = {

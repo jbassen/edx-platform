@@ -234,225 +234,389 @@ if settings.WIKI_ENABLED:
         url(r'^courses/{}/wiki/'.format(settings.COURSE_KEY_REGEX), include(wiki_pattern())),
     )
 
-if settings.COURSEWARE_ENABLED:
-    urlpatterns += (
-        url(r'^courses/{}/jump_to/(?P<location>.*)$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.jump_to', name="jump_to"),
-        url(r'^courses/{}/jump_to_id/(?P<module_id>.*)$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.jump_to_id', name="jump_to_id"),
-        url(r'^courses/{course_key}/xblock/{usage_key}/handler/(?P<handler>[^/]*)(?:/(?P<suffix>.*))?$'.format(course_key=settings.COURSE_ID_PATTERN, usage_key=settings.USAGE_ID_PATTERN),
-            'courseware.module_render.handle_xblock_callback',
-            name='xblock_handler'),
-        url(r'^courses/{course_key}/xblock/{usage_key}/view/(?P<view_name>[^/]*)$'.format(
+urlpatterns += (
+    url(
+        r'^courses/{}/jump_to/(?P<location>.*)$'.format(
+            settings.COURSE_ID_PATTERN,
+        ),
+        'courseware.views.jump_to',
+        name='jump_to',
+    ),
+    url(
+        r'^courses/{}/jump_to_id/(?P<module_id>.*)$'.format(
+            settings.COURSE_ID_PATTERN,
+        ),
+        'courseware.views.jump_to_id',
+        name='jump_to_id',
+    ),
+    url(
+        r'^courses/{course_key}/xblock/{usage_key}/handler/(?P<handler>[^/]*)(?:/(?P<suffix>.*))?$'.format(
             course_key=settings.COURSE_ID_PATTERN,
-            usage_key=settings.USAGE_ID_PATTERN),
-            'courseware.module_render.xblock_view',
-            name='xblock_view'),
-        url(r'^courses/{course_key}/xblock/{usage_key}/handler_noauth/(?P<handler>[^/]*)(?:/(?P<suffix>.*))?$'.format(course_key=settings.COURSE_ID_PATTERN, usage_key=settings.USAGE_ID_PATTERN),
-            'courseware.module_render.handle_xblock_callback_noauth',
-            name='xblock_handler_noauth'),
-        url(r'xblock/resource/(?P<block_type>[^/]+)/(?P<uri>.*)$',
-            'courseware.module_render.xblock_resource',
-            name='xblock_resource_url'),
+            usage_key=settings.USAGE_ID_PATTERN,
+        ),
+        'courseware.module_render.handle_xblock_callback',
+        name='xblock_handler',
+    ),
+    url(
+        r'^courses/{course_key}/xblock/{usage_key}/view/(?P<view_name>[^/]*)$'.format(
+            course_key=settings.COURSE_ID_PATTERN,
+            usage_key=settings.USAGE_ID_PATTERN,
+        ),
+        'courseware.module_render.xblock_view',
+        name='xblock_view',
+    ),
+    url(
+        r'^courses/{course_key}/xblock/{usage_key}/handler_noauth/(?P<handler>[^/]*)(?:/(?P<suffix>.*))?$'.format(
+            course_key=settings.COURSE_ID_PATTERN,
+            usage_key=settings.USAGE_ID_PATTERN,
+        ),
+        'courseware.module_render.handle_xblock_callback_noauth',
+        name='xblock_handler_noauth',
+    ),
+    url(
+        r'xblock/resource/(?P<block_type>[^/]+)/(?P<uri>.*)$',
+        'courseware.module_render.xblock_resource',
+        name='xblock_resource_url',
+    ),
 
-        # Software Licenses
+    # TODO: for now, this is the endpoint of an ajax replay
+    # service that retrieve and assigns license numbers for
+    # software assigned to a course. The numbers have to be loaded
+    # into the database.
+    url(
+        r'^software-licenses$',
+        'licenses.views.user_software_license',
+        name='user_software_license',
+    ),
 
-        # TODO: for now, this is the endpoint of an ajax replay
-        # service that retrieve and assigns license numbers for
-        # software assigned to a course. The numbers have to be loaded
-        # into the database.
-        url(r'^software-licenses$', 'licenses.views.user_software_license', name="user_software_license"),
+    url(
+        r'^courses/{}/xqueue/(?P<userid>[^/]*)/(?P<mod_id>.*?)/(?P<dispatch>[^/]*)$'.format(
+            settings.COURSE_ID_PATTERN,
+        ),
+        'courseware.module_render.xqueue_callback',
+        name='xqueue_callback',
+    ),
+    url(
+        r'^change_setting$',
+        'student.views.change_setting',
+        name='change_setting',
+    ),
 
-        url(r'^courses/{}/xqueue/(?P<userid>[^/]*)/(?P<mod_id>.*?)/(?P<dispatch>[^/]*)$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.module_render.xqueue_callback',
-            name='xqueue_callback'),
-        url(r'^change_setting$', 'student.views.change_setting',
-            name='change_setting'),
+    # TODO: These views need to be updated before they work
+    url(r'^calculate$', 'util.views.calculate'),
+    # TODO: We should probably remove the circuit package. I believe it
+    # was only used in the old way of saving wiki circuits for the wiki
+    # url(r'^edit_circuit/(?P<circuit>[^/]*)$', 'circuit.views.edit_circuit'),
+    # url(r'^save_circuit/(?P<circuit>[^/]*)$', 'circuit.views.save_circuit'),
 
-        # TODO: These views need to be updated before they work
-        url(r'^calculate$', 'util.views.calculate'),
-        # TODO: We should probably remove the circuit package. I believe it was only used in the old way of saving wiki circuits for the wiki
-        # url(r'^edit_circuit/(?P<circuit>[^/]*)$', 'circuit.views.edit_circuit'),
-        # url(r'^save_circuit/(?P<circuit>[^/]*)$', 'circuit.views.save_circuit'),
+    url(r'^courses/?$', 'branding.views.courses', name="courses"),
+    url(
+        r'^change_enrollment$',
+        'student.views.change_enrollment',
+        name='change_enrollment',
+    ),
+    url(
+        r'^change_email_settings$',
+        'student.views.change_email_settings',
+        name='change_email_settings',
+    ),
 
-        url(r'^courses/?$', 'branding.views.courses', name="courses"),
-        url(r'^change_enrollment$',
-            'student.views.change_enrollment', name="change_enrollment"),
-        url(r'^change_email_settings$', 'student.views.change_email_settings', name="change_email_settings"),
+    # About the course
+    url(
+        r'^courses/{}/about$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.course_about',
+        name='about_course',
+    ),
+    # View for mktg site (kept for backwards compatibility TODO - remove before merge to master)
+    url(
+        r'^courses/{}/mktg-about$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.mktg_course_about',
+        name='mktg_about_course',
+    ),
+    # View for mktg site
+    url(
+        r'^mktg/{}/?$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.mktg_course_about',
+        name='mktg_about_course',
+    ),
 
-        #About the course
-        url(r'^courses/{}/about$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.course_about', name="about_course"),
-        #View for mktg site (kept for backwards compatibility TODO - remove before merge to master)
-        url(r'^courses/{}/mktg-about$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.mktg_course_about', name="mktg_about_course"),
-        #View for mktg site
-        url(r'^mktg/{}/?$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.mktg_course_about', name="mktg_about_course"),
+    # Inside the course
+    url(
+        r'^courses/{}/$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.course_info',
+        name='course_root',
+    ),
+    url(
+        r'^courses/{}/info$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.course_info',
+        name='info',
+    ),
+    url(
+        r'^courses/{}/syllabus$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.syllabus',
+        name='syllabus',
+    ),   # TODO arjun remove when custom tabs in place, see courseware/courses.py
 
-        #Inside the course
-        url(r'^courses/{}/$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.course_info', name="course_root"),
-        url(r'^courses/{}/info$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.course_info', name="info"),
-        url(r'^courses/{}/syllabus$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.syllabus', name="syllabus"),   # TODO arjun remove when custom tabs in place, see courseware/courses.py
+    # Survey associated with a course
+    url(
+        r'^courses/{}/survey$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.course_survey',
+        name='course_survey',
+    ),
 
-        #Survey associated with a course
-        url(r'^courses/{}/survey$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.course_survey', name="course_survey"),
+    url(
+        r'^courses/{}/book/(?P<book_index>\d+)/$'.format(settings.COURSE_ID_PATTERN),
+        'staticbook.views.index',
+        name='book',
+    ),
+    url(
+        r'^courses/{}/book/(?P<book_index>\d+)/(?P<page>\d+)$'.format(settings.COURSE_ID_PATTERN),
+        'staticbook.views.index',
+        name='book',
+    ),
 
-        url(r'^courses/{}/book/(?P<book_index>\d+)/$'.format(settings.COURSE_ID_PATTERN),
-            'staticbook.views.index', name="book"),
-        url(r'^courses/{}/book/(?P<book_index>\d+)/(?P<page>\d+)$'.format(settings.COURSE_ID_PATTERN),
-            'staticbook.views.index', name="book"),
+    url(
+        r'^courses/{}/pdfbook/(?P<book_index>\d+)/$'.format(settings.COURSE_ID_PATTERN),
+        'staticbook.views.pdf_index',
+        name='pdf_book',
+    ),
+    url(
+        r'^courses/{}/pdfbook/(?P<book_index>\d+)/(?P<page>\d+)$'.format(settings.COURSE_ID_PATTERN),
+        'staticbook.views.pdf_index',
+        name='pdf_book',
+    ),
 
-        url(r'^courses/{}/pdfbook/(?P<book_index>\d+)/$'.format(settings.COURSE_ID_PATTERN),
-            'staticbook.views.pdf_index', name="pdf_book"),
-        url(r'^courses/{}/pdfbook/(?P<book_index>\d+)/(?P<page>\d+)$'.format(settings.COURSE_ID_PATTERN),
-            'staticbook.views.pdf_index', name="pdf_book"),
+    url(
+        r'^courses/{}/pdfbook/(?P<book_index>\d+)/chapter/(?P<chapter>\d+)/$'.format(settings.COURSE_ID_PATTERN),
+        'staticbook.views.pdf_index',
+        name='pdf_book',
+    ),
+    url(
+        r'^courses/{}/pdfbook/(?P<book_index>\d+)/chapter/(?P<chapter>\d+)/(?P<page>\d+)$'.format(settings.COURSE_ID_PATTERN),
+        'staticbook.views.pdf_index',
+        name='pdf_book',
+    ),
 
-        url(r'^courses/{}/pdfbook/(?P<book_index>\d+)/chapter/(?P<chapter>\d+)/$'.format(settings.COURSE_ID_PATTERN),
-            'staticbook.views.pdf_index', name="pdf_book"),
-        url(r'^courses/{}/pdfbook/(?P<book_index>\d+)/chapter/(?P<chapter>\d+)/(?P<page>\d+)$'.format(settings.COURSE_ID_PATTERN),
-            'staticbook.views.pdf_index', name="pdf_book"),
+    url(
+        r'^courses/{}/htmlbook/(?P<book_index>\d+)/$'.format(settings.COURSE_ID_PATTERN),
+        'staticbook.views.html_index',
+        name='html_book',
+    ),
+    url(
+        r'^courses/{}/htmlbook/(?P<book_index>\d+)/chapter/(?P<chapter>\d+)/$'.format(settings.COURSE_ID_PATTERN),
+        'staticbook.views.html_index',
+        name='html_book',
+    ),
 
-        url(r'^courses/{}/htmlbook/(?P<book_index>\d+)/$'.format(settings.COURSE_ID_PATTERN),
-            'staticbook.views.html_index', name="html_book"),
-        url(r'^courses/{}/htmlbook/(?P<book_index>\d+)/chapter/(?P<chapter>\d+)/$'.format(settings.COURSE_ID_PATTERN),
-            'staticbook.views.html_index', name="html_book"),
+    url(
+        r'^courses/{}/courseware/?$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.index',
+        name='courseware',
+    ),
+    url(
+        r'^courses/{}/courseware/(?P<chapter>[^/]*)/$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.index',
+        name='courseware_chapter',
+    ),
+    url(
+        r'^courses/{}/courseware/(?P<chapter>[^/]*)/(?P<section>[^/]*)/$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.index',
+        name='courseware_section',
+    ),
+    url(
+        r'^courses/{}/courseware/(?P<chapter>[^/]*)/(?P<section>[^/]*)/(?P<position>[^/]*)/?$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.index',
+        name='courseware_position',
+    ),
 
-        url(r'^courses/{}/courseware/?$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.index', name="courseware"),
-        url(r'^courses/{}/courseware/(?P<chapter>[^/]*)/$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.index', name="courseware_chapter"),
-        url(r'^courses/{}/courseware/(?P<chapter>[^/]*)/(?P<section>[^/]*)/$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.index', name="courseware_section"),
-        url(r'^courses/{}/courseware/(?P<chapter>[^/]*)/(?P<section>[^/]*)/(?P<position>[^/]*)/?$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.index', name="courseware_position"),
+    url(
+        r'^courses/{}/progress$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.progress',
+        name='progress',
+    ),
+    # Takes optional student_id for instructor use--shows profile as that student sees it.
+    url(
+        r'^courses/{}/progress/(?P<student_id>[^/]*)/$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.progress',
+        name='student_progress',
+    ),
 
-        url(r'^courses/{}/progress$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.progress', name="progress"),
-        # Takes optional student_id for instructor use--shows profile as that student sees it.
-        url(r'^courses/{}/progress/(?P<student_id>[^/]*)/$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.progress', name="student_progress"),
+    # For the instructor
+    url(
+        r'^courses/{}/instructor$'.format(settings.COURSE_ID_PATTERN),
+        'instructor.views.instructor_dashboard.instructor_dashboard_2',
+        name='instructor_dashboard',
+    ),
+    url(
+        r'^courses/{}/set_course_mode_price$'.format(settings.COURSE_ID_PATTERN),
+        'instructor.views.instructor_dashboard.set_course_mode_price',
+        name='set_course_mode_price',
+    ),
+    url(
+        r'^courses/{}/instructor/api/'.format(settings.COURSE_ID_PATTERN),
+        include('instructor.views.api_urls'),
+    ),
+    url(
+        r'^courses/{}/remove_coupon$'.format(settings.COURSE_ID_PATTERN),
+        'instructor.views.coupons.remove_coupon',
+        name='remove_coupon',
+    ),
+    url(
+        r'^courses/{}/add_coupon$'.format(settings.COURSE_ID_PATTERN),
+        'instructor.views.coupons.add_coupon',
+        name='add_coupon',
+    ),
+    url(
+        r'^courses/{}/update_coupon$'.format(settings.COURSE_ID_PATTERN),
+        'instructor.views.coupons.update_coupon',
+        name='update_coupon',
+    ),
+    url(
+        r'^courses/{}/get_coupon_info$'.format(settings.COURSE_ID_PATTERN),
+        'instructor.views.coupons.get_coupon_info',
+        name='get_coupon_info',
+    ),
 
-        # For the instructor
-        url(r'^courses/{}/instructor$'.format(settings.COURSE_ID_PATTERN),
-            'instructor.views.instructor_dashboard.instructor_dashboard_2', name="instructor_dashboard"),
-        url(r'^courses/{}/set_course_mode_price$'.format(settings.COURSE_ID_PATTERN),
-            'instructor.views.instructor_dashboard.set_course_mode_price', name="set_course_mode_price"),
-        url(r'^courses/{}/instructor/api/'.format(settings.COURSE_ID_PATTERN),
-            include('instructor.views.api_urls')),
-        url(r'^courses/{}/remove_coupon$'.format(settings.COURSE_ID_PATTERN),
-            'instructor.views.coupons.remove_coupon', name="remove_coupon"),
-        url(r'^courses/{}/add_coupon$'.format(settings.COURSE_ID_PATTERN),
-            'instructor.views.coupons.add_coupon', name="add_coupon"),
-        url(r'^courses/{}/update_coupon$'.format(settings.COURSE_ID_PATTERN),
-            'instructor.views.coupons.update_coupon', name="update_coupon"),
-        url(r'^courses/{}/get_coupon_info$'.format(settings.COURSE_ID_PATTERN),
-            'instructor.views.coupons.get_coupon_info', name="get_coupon_info"),
+    # Open Ended grading views
+    url(
+        r'^courses/{}/staff_grading$'.format(settings.COURSE_ID_PATTERN),
+        'open_ended_grading.views.staff_grading',
+        name='staff_grading',
+    ),
+    url(
+        r'^courses/{}/staff_grading/get_next$'.format(settings.COURSE_ID_PATTERN),
+        'open_ended_grading.staff_grading_service.get_next',
+        name='staff_grading_get_next',
+    ),
+    url(
+        r'^courses/{}/staff_grading/save_grade$'.format(settings.COURSE_ID_PATTERN),
+        'open_ended_grading.staff_grading_service.save_grade',
+        name='staff_grading_save_grade',
+    ),
+    url(
+        r'^courses/{}/staff_grading/get_problem_list$'.format(settings.COURSE_ID_PATTERN),
+        'open_ended_grading.staff_grading_service.get_problem_list',
+        name='staff_grading_get_problem_list',
+    ),
 
-        # see ENABLE_INSTRUCTOR_LEGACY_DASHBOARD section for legacy dash urls
+    # Open Ended problem list
+    url(
+        r'^courses/{}/open_ended_problems$'.format(settings.COURSE_ID_PATTERN),
+        'open_ended_grading.views.student_problem_list',
+        name='open_ended_problems',
+    ),
 
-        # Open Ended grading views
-        url(r'^courses/{}/staff_grading$'.format(settings.COURSE_ID_PATTERN),
-            'open_ended_grading.views.staff_grading', name='staff_grading'),
-        url(r'^courses/{}/staff_grading/get_next$'.format(settings.COURSE_ID_PATTERN),
-            'open_ended_grading.staff_grading_service.get_next', name='staff_grading_get_next'),
-        url(r'^courses/{}/staff_grading/save_grade$'.format(settings.COURSE_ID_PATTERN),
-            'open_ended_grading.staff_grading_service.save_grade', name='staff_grading_save_grade'),
-        url(r'^courses/{}/staff_grading/get_problem_list$'.format(settings.COURSE_ID_PATTERN),
-            'open_ended_grading.staff_grading_service.get_problem_list', name='staff_grading_get_problem_list'),
+    # Open Ended flagged problem list
+    url(
+        r'^courses/{}/open_ended_flagged_problems$'.format(settings.COURSE_ID_PATTERN),
+        'open_ended_grading.views.flagged_problem_list',
+        name='open_ended_flagged_problems',
+    ),
+    url(
+        r'^courses/{}/open_ended_flagged_problems/take_action_on_flags$'.format(settings.COURSE_ID_PATTERN),
+        'open_ended_grading.views.take_action_on_flags',
+        name='open_ended_flagged_problems_take_action',
+    ),
 
-        # Open Ended problem list
-        url(r'^courses/{}/open_ended_problems$'.format(settings.COURSE_ID_PATTERN),
-            'open_ended_grading.views.student_problem_list', name='open_ended_problems'),
+    # Cohorts management
+    url(
+        r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)?$'.format(settings.COURSE_KEY_PATTERN),
+        'openedx.core.djangoapps.course_groups.views.cohort_handler',
+        name='cohorts',
+    ),
+    url(
+        r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)$'.format(settings.COURSE_KEY_PATTERN),
+        'openedx.core.djangoapps.course_groups.views.users_in_cohort',
+        name='list_cohort',
+    ),
+    url(
+        r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)/add$'.format(settings.COURSE_KEY_PATTERN),
+        'openedx.core.djangoapps.course_groups.views.add_users_to_cohort',
+        name='add_to_cohort',
+    ),
+    url(r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)/delete$'.format(settings.COURSE_KEY_PATTERN),
+        'openedx.core.djangoapps.course_groups.views.remove_user_from_cohort',
+        name='remove_from_cohort',
+    ),
+    url(r'^courses/{}/cohorts/debug$'.format(settings.COURSE_KEY_PATTERN),
+        'openedx.core.djangoapps.course_groups.views.debug_cohort_mgmt',
+        name='debug_cohort_mgmt',
+    ),
 
-        # Open Ended flagged problem list
-        url(r'^courses/{}/open_ended_flagged_problems$'.format(settings.COURSE_ID_PATTERN),
-            'open_ended_grading.views.flagged_problem_list', name='open_ended_flagged_problems'),
-        url(r'^courses/{}/open_ended_flagged_problems/take_action_on_flags$'.format(settings.COURSE_ID_PATTERN),
-            'open_ended_grading.views.take_action_on_flags', name='open_ended_flagged_problems_take_action'),
+    # Open Ended Notifications
+    url(
+        r'^courses/{}/open_ended_notifications$'.format(settings.COURSE_ID_PATTERN),
+        'open_ended_grading.views.combined_notifications',
+        name='open_ended_notifications',
+    ),
 
-        # Cohorts management
-        url(r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)?$'.format(settings.COURSE_KEY_PATTERN),
-            'openedx.core.djangoapps.course_groups.views.cohort_handler', name="cohorts"),
-        url(r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)$'.format(settings.COURSE_KEY_PATTERN),
-            'openedx.core.djangoapps.course_groups.views.users_in_cohort',
-            name="list_cohort"),
-        url(r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)/add$'.format(settings.COURSE_KEY_PATTERN),
-            'openedx.core.djangoapps.course_groups.views.add_users_to_cohort',
-            name="add_to_cohort"),
-        url(r'^courses/{}/cohorts/(?P<cohort_id>[0-9]+)/delete$'.format(settings.COURSE_KEY_PATTERN),
-            'openedx.core.djangoapps.course_groups.views.remove_user_from_cohort',
-            name="remove_from_cohort"),
-        url(r'^courses/{}/cohorts/debug$'.format(settings.COURSE_KEY_PATTERN),
-            'openedx.core.djangoapps.course_groups.views.debug_cohort_mgmt',
-            name="debug_cohort_mgmt"),
+    url(
+        r'^courses/{}/peer_grading$'.format(settings.COURSE_ID_PATTERN),
+        'open_ended_grading.views.peer_grading',
+        name='peer_grading',
+    ),
 
-        # Open Ended Notifications
-        url(r'^courses/{}/open_ended_notifications$'.format(settings.COURSE_ID_PATTERN),
-            'open_ended_grading.views.combined_notifications', name='open_ended_notifications'),
+    url(r'^courses/{}/notes$'.format(settings.COURSE_ID_PATTERN), 'notes.views.notes', name='notes'),
+    url(r'^courses/{}/notes/'.format(settings.COURSE_ID_PATTERN), include('notes.urls')),
 
-        url(r'^courses/{}/peer_grading$'.format(settings.COURSE_ID_PATTERN),
-            'open_ended_grading.views.peer_grading', name='peer_grading'),
+    # LTI endpoints listing
+    url(
+        r'^courses/{}/lti_rest_endpoints/'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.get_course_lti_endpoints',
+        name='lti_rest_endpoints',
+    ),
 
-        url(r'^courses/{}/notes$'.format(settings.COURSE_ID_PATTERN), 'notes.views.notes', name='notes'),
-        url(r'^courses/{}/notes/'.format(settings.COURSE_ID_PATTERN), include('notes.urls')),
+    # Student account and profile
+    url(r'^account/', include('student_account.urls')),
 
-        # LTI endpoints listing
-        url(r'^courses/{}/lti_rest_endpoints/'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.get_course_lti_endpoints', name='lti_rest_endpoints'),
+    # Student Notes
+    url(
+        r'^courses/{}/edxnotes'.format(settings.COURSE_ID_PATTERN),
+        include('edxnotes.urls'),
+        name='edxnotes_endpoints',
+    ),
+)
 
-        # Student account and profile
-        url(r'^account/', include('student_account.urls')),
-
-        # Student Notes
-        url(r'^courses/{}/edxnotes'.format(settings.COURSE_ID_PATTERN),
-            include('edxnotes.urls'), name="edxnotes_endpoints"),
-    )
-
-    # allow course staff to change to student view of courseware
-    if settings.FEATURES.get('ENABLE_MASQUERADE'):
-        urlpatterns += (
-            url(r'^courses/{}/masquerade$'.format(settings.COURSE_KEY_PATTERN),
-                'courseware.masquerade.handle_ajax', name="masquerade_update"),
-        )
-
+# allow course staff to change to student view of courseware
+if settings.FEATURES.get('ENABLE_MASQUERADE'):
     urlpatterns += (
-        url(r'^courses/{}/generate_user_cert'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.generate_user_cert', name="generate_user_cert"),
+        url(r'^courses/{}/masquerade$'.format(settings.COURSE_KEY_PATTERN),
+            'courseware.masquerade.handle_ajax', name="masquerade_update"),
     )
 
-    # discussion forums live within courseware, so courseware must be enabled first
-    if settings.FEATURES.get('ENABLE_DISCUSSION_SERVICE'):
-        urlpatterns += (
-            url(r'^courses/{}/discussion/'.format(settings.COURSE_ID_PATTERN),
-                include('django_comment_client.urls')),
-            url(r'^notification_prefs/enable/', 'notification_prefs.views.ajax_enable'),
-            url(r'^notification_prefs/disable/', 'notification_prefs.views.ajax_disable'),
-            url(r'^notification_prefs/status/', 'notification_prefs.views.ajax_status'),
-            url(r'^notification_prefs/unsubscribe/(?P<token>[a-zA-Z0-9-_=]+)/',
-                'notification_prefs.views.set_subscription', {'subscribe': False}, name="unsubscribe_forum_update"),
-            url(r'^notification_prefs/resubscribe/(?P<token>[a-zA-Z0-9-_=]+)/',
-                'notification_prefs.views.set_subscription', {'subscribe': True}, name="resubscribe_forum_update"),
-        )
+urlpatterns += (
+    url(r'^courses/{}/generate_user_cert'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.generate_user_cert', name="generate_user_cert"),
+)
+
+# discussion forums live within courseware, so courseware must be enabled first
+if settings.FEATURES.get('ENABLE_DISCUSSION_SERVICE'):
     urlpatterns += (
-        # This MUST be the last view in the courseware--it's a catch-all for custom tabs.
-        url(r'^courses/{}/(?P<tab_slug>[^/]+)/$'.format(settings.COURSE_ID_PATTERN),
-            'courseware.views.static_tab', name="static_tab"),
+        url(r'^courses/{}/discussion/'.format(settings.COURSE_ID_PATTERN),
+            include('django_comment_client.urls')),
+        url(r'^notification_prefs/enable/', 'notification_prefs.views.ajax_enable'),
+        url(r'^notification_prefs/disable/', 'notification_prefs.views.ajax_disable'),
+        url(r'^notification_prefs/status/', 'notification_prefs.views.ajax_status'),
+        url(r'^notification_prefs/unsubscribe/(?P<token>[a-zA-Z0-9-_=]+)/',
+            'notification_prefs.views.set_subscription', {'subscribe': False}, name="unsubscribe_forum_update"),
+        url(r'^notification_prefs/resubscribe/(?P<token>[a-zA-Z0-9-_=]+)/',
+            'notification_prefs.views.set_subscription', {'subscribe': True}, name="resubscribe_forum_update"),
+    )
+urlpatterns += (
+    # This MUST be the last view in the courseware--it's a catch-all for custom tabs.
+    url(r'^courses/{}/(?P<tab_slug>[^/]+)/$'.format(settings.COURSE_ID_PATTERN),
+        'courseware.views.static_tab', name="static_tab"),
+)
+
+if settings.FEATURES.get('ENABLE_STUDENT_HISTORY_VIEW'):
+    urlpatterns += (
+        url(r'^courses/{}/submission_history/(?P<student_username>[^/]*)/(?P<location>.*?)$'.format(settings.COURSE_ID_PATTERN),
+            'courseware.views.submission_history',
+            name='submission_history'),
     )
 
-    if settings.FEATURES.get('ENABLE_STUDENT_HISTORY_VIEW'):
-        urlpatterns += (
-            url(r'^courses/{}/submission_history/(?P<student_username>[^/]*)/(?P<location>.*?)$'.format(settings.COURSE_ID_PATTERN),
-                'courseware.views.submission_history',
-                name='submission_history'),
-        )
 
-
-if settings.COURSEWARE_ENABLED and settings.FEATURES.get('ENABLE_INSTRUCTOR_LEGACY_DASHBOARD'):
+if settings.FEATURES.get('ENABLE_INSTRUCTOR_LEGACY_DASHBOARD'):
     urlpatterns += (
         url(r'^courses/{}/legacy_instructor_dash$'.format(settings.COURSE_ID_PATTERN),
             'instructor.views.legacy.instructor_dashboard', name="instructor_dashboard_legacy"),
