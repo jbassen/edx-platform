@@ -8,6 +8,10 @@ import re
 from .utils.envs import Env
 
 ALL_SYSTEMS = 'lms,cms,common,pavelib,scripts,docs'
+SUB_SYSTEMS = [
+    'djangoapps',
+    'lib',
+]
 
 
 @task
@@ -29,7 +33,7 @@ def find_fixme(options):
 
         apps = [system]
 
-        for directory in ['djangoapps', 'lib']:
+        for directory in SUB_SYSTEMS:
             try:
                 dirs = os.listdir(os.path.join(system, directory))
                 apps.extend([d for d in dirs if os.path.isdir(os.path.join(system, directory, d))])
