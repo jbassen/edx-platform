@@ -1,7 +1,7 @@
 ---> pavelib.quality.find_fixme
 ---> pavelib.prereqs.install_python_prereqs
 Python prereqs unchanged, skipping...
-PYTHONPATH=lms:lms/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" lms | tee /edx/app/edxapp/edx-platform/reports/lms/pylint_fixme.report
+PYTHONPATH=lms:lms/lib:common/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" lms | tee /edx/app/edxapp/edx-platform/reports/lms/pylint_fixme.report
 ************* Module lms.urls
 lms/urls.py:36: [W0511(fixme), ] TODO: Is this used anymore? What is STATIC_GRAB?
 lms/urls.py:49: [W0511(fixme), ] TODO: Replace with Mako-ized views
@@ -131,7 +131,7 @@ lms/envs/yaml_config.py:291: [W0511(fixme), ] TODO: deprecated (compatibility wi
 lms/lib/comment_client/thread.py:115: [W0511(fixme), ] TODO: This is currently overriding Model._retrieve only to add parameters
 ************* Module lms.lib.courseware_search.lms_result_processor
 lms/lib/courseware_search/lms_result_processor.py:69: [W0511(fixme), ] TODO: update whern changes to "cohorted-courseware" branch are merged in
-PYTHONPATH=cms:cms/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" cms | tee /edx/app/edxapp/edx-platform/reports/cms/pylint_fixme.report
+PYTHONPATH=cms:cms/lib:common/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" cms | tee /edx/app/edxapp/edx-platform/reports/cms/pylint_fixme.report
 ************* Module cms.djangoapps.contentstore.tests.test_clone_course
 cms/djangoapps/contentstore/tests/test_clone_course.py:25: [W0511(fixme), ] TODO - This is currently failing since clone_course doesn't handle Private content - fails on Publish
 ************* Module cms.djangoapps.contentstore.tests.test_contentstore
@@ -158,8 +158,8 @@ cms/envs/aws.py:261: [W0511(fixme), ] TODO: deprecated (compatibility with previ
 cms/envs/test.py:74: [W0511(fixme), ] TODO (cpennington): We need to figure out how envs/test.py can inject things into common.py so that we don't have to repeat this sort of thing
 ************* Module cms.envs.yaml_config
 cms/envs/yaml_config.py:250: [W0511(fixme), ] TODO: deprecated (compatibility with previous settings)
-PYTHONPATH=common:common/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" common | tee /edx/app/edxapp/edx-platform/reports/common/pylint_fixme.report
-PYTHONPATH=pavelib:pavelib/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" pavelib | tee /edx/app/edxapp/edx-platform/reports/pavelib/pylint_fixme.report
+PYTHONPATH=common:common/lib:common/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" common | tee /edx/app/edxapp/edx-platform/reports/common/pylint_fixme.report
+PYTHONPATH=pavelib:pavelib/lib:common/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" pavelib | tee /edx/app/edxapp/edx-platform/reports/pavelib/pylint_fixme.report
 ************* Module pavelib.acceptance_test
 pavelib/acceptance_test.py:11: [I0022(deprecated-pragma), ] Pragma "disable-msg" is deprecated, use "disable" instead
 ************* Module pavelib.bok_choy
@@ -179,8 +179,8 @@ pavelib/utils/test/suites/acceptance_suite.py:80: [W0511(fixme), ] TODO fix Acce
 pavelib/utils/test/suites/bokchoy_suite.py:13: [I0022(deprecated-pragma), ] Pragma "disable-msg" is deprecated, use "disable" instead
 ************* Module pavelib.utils.test.suites.suite
 pavelib/utils/test/suites/suite.py:11: [I0022(deprecated-pragma), ] Pragma "disable-msg" is deprecated, use "disable" instead
-PYTHONPATH=scripts:scripts/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" scripts | tee /edx/app/edxapp/edx-platform/reports/scripts/pylint_fixme.report
+PYTHONPATH=scripts:scripts/lib:common/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" scripts | tee /edx/app/edxapp/edx-platform/reports/scripts/pylint_fixme.report
 ************* 
 scripts/__init__.py:1: [F0010(parse-error), ] error while code parsing: Unable to load file 'scripts/__init__.py' ([Errno 2] No such file or directory: 'scripts/__init__.py')
-PYTHONPATH=docs:docs/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" docs | tee /edx/app/edxapp/edx-platform/reports/docs/pylint_fixme.report
+PYTHONPATH=docs:docs/lib:common/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" docs | tee /edx/app/edxapp/edx-platform/reports/docs/pylint_fixme.report
 Number of pylint fixmes: 115

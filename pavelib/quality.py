@@ -30,20 +30,10 @@ def find_fixme(options):
         # Directory to put the pylint report in.
         # This makes the folder if it doesn't already exist.
         report_dir = (Env.REPORT_DIR / system).makedirs_p()
-
-        apps = [system]
-
-        for directory in SUB_SYSTEMS:
-            try:
-                dirs = os.listdir(os.path.join(system, directory))
-                apps.extend([d for d in dirs if os.path.isdir(os.path.join(system, directory, d))])
-            except OSError:
-                pass
-
-        apps_list = ' '.join(apps)
+        apps_list = system
 
         pythonpath_prefix = (
-            "PYTHONPATH={system}:{system}/lib"
+            "PYTHONPATH={system}:{system}/lib:"
             "common/djangoapps:common/lib".format(
                 system=system
             )
@@ -51,11 +41,11 @@ def find_fixme(options):
 
         sh(
             "{pythonpath_prefix} pylint --disable R,C,W,E --enable=fixme "
-            "--msg-template={msg_template} {apps} "
+            "--msg-template={msg_template} {system} "
             "| tee {report_dir}/pylint_fixme.report".format(
                 pythonpath_prefix=pythonpath_prefix,
                 msg_template='"{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}"',
-                apps=apps_list,
+                system=system,
                 report_dir=report_dir
             )
         )
