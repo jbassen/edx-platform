@@ -320,10 +320,7 @@ def is_percentage_failure(error_message):
     paver with a subprocess return code error. If the subprocess exits with anything other than 1, raise
     a paver exception.
     """
-    if "Subprocess return code: 1" not in error_message:
-        return False
-    else:
-        return True
+    return 'Subprocess return code: 1' in error_message
 
 
 def get_violations_reports(violations_type):
