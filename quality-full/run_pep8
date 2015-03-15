@@ -8,8 +8,8 @@ lms/djangoapps/theming/views.py:10:1: E302 expected 2 blank lines, found 1
 pep8 cms | tee /edx/app/edxapp/edx-platform/reports/pep8/pep8.report -a
 pep8 common | tee /edx/app/edxapp/edx-platform/reports/pep8/pep8.report -a
 pep8 pavelib | tee /edx/app/edxapp/edx-platform/reports/pep8/pep8.report -a
-pavelib/quality.py:81:1: W293 blank line contains whitespace
-pavelib/quality.py:174:1: W293 blank line contains whitespace
+pavelib/quality.py:86:1: W293 blank line contains whitespace
+pavelib/quality.py:179:1: W293 blank line contains whitespace
 pep8 scripts | tee /edx/app/edxapp/edx-platform/reports/pep8/pep8.report -a
 pep8 docs | tee /edx/app/edxapp/edx-platform/reports/pep8/pep8.report -a
 Number of pep8 violations: 5
@@ -31,7 +31,7 @@ Traceback (most recent call last):
     return do_task()
   File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/paver/tasks.py", line 192, in do_task
     return func(**kw)
-  File "pavelib/quality.py", line 197, in run_pep8
+  File "pavelib/quality.py", line 202, in run_pep8
     count=count
 Exception: Too many pep8 violations. Number of violations found: 5.
 
