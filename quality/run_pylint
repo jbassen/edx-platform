@@ -7,4 +7,4 @@ PYTHONPATH=common:common/djangoapps:common/lib:common/djangoapps:common/lib pyli
 PYTHONPATH=pavelib:pavelib/djangoapps:pavelib/lib:common/djangoapps:common/lib pylint  --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" pavelib | tee /edx/app/edxapp/edx-platform/reports/pavelib/pylint.report
 PYTHONPATH=scripts:scripts/djangoapps:scripts/lib:common/djangoapps:common/lib pylint  --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" scripts | tee /edx/app/edxapp/edx-platform/reports/scripts/pylint.report
 PYTHONPATH=docs:docs/djangoapps:docs/lib:common/djangoapps:common/lib pylint  --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" docs | tee /edx/app/edxapp/edx-platform/reports/docs/pylint.report
-Number of pylint violations: 6077
+Number of pylint violations: 6083

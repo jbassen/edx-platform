@@ -2,21 +2,9 @@
 ---> pavelib.prereqs.install_python_prereqs
 Python prereqs unchanged, skipping...
 PYTHONPATH=lms:lms/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" lms branding bulk_email certificates circuit class_dashboard commerce course_structure_api course_wiki courseware dashboard debug django_comment_client edxnotes foldit instructor instructor_analytics instructor_task licenses lms_migration lms_xblock mobile_api notes notification_prefs notifier_api oauth2_handler open_ended_grading psychometrics shoppingcart static_template_view staticbook student_account survey theming verify_student comment_client courseware_search newrelic_logging xblock | tee /edx/app/edxapp/edx-platform/reports/lms/pylint_fixme.report
-
-
-Captured Task Output:
----------------------
-
----> pavelib.quality.find_fixme
----> pavelib.prereqs.install_python_prereqs
-Traceback (most recent call last):
-  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/paver/tasks.py", line 195, in _run_task
-    return do_task()
-  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/paver/tasks.py", line 192, in do_task
-    return func(**kw)
-  File "pavelib/quality.py", line 57, in find_fixme
-    "{report_dir}/pylint_fixme.report".format(report_dir=report_dir))
-  File "pavelib/quality.py", line 147, in _count_pylint_violations
-    for line in open(report_file):
-IOError: [Errno 2] No such file or directory: '/edx/app/edxapp/edx-platform/reports/lms/pylint_fixme.report'
-
+PYTHONPATH=cms:cms/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" cms contentstore course_creators models xblock_config django_require xblock | tee /edx/app/edxapp/edx-platform/reports/cms/pylint_fixme.report
+PYTHONPATH=common:common/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" common cache_toolbox config_models contentserver cors_csrf course_about course_action_state course_modes dark_lang datadog django_comment_common django_future edxmako embargo enrollment external_auth geoinfo heartbeat lang_pref microsite_configuration monitoring monkey_patch oauth_exchange pipeline_js pipeline_mako request_cache reverification service_status session_inactivity_timeout static_replace status student terrain third_party_auth track util xblock_django xmodule_django calc capa chem dogstats i18n safe_lxml sandbox-packages symmath xmodule | tee /edx/app/edxapp/edx-platform/reports/common/pylint_fixme.report
+PYTHONPATH=pavelib:pavelib/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" pavelib | tee /edx/app/edxapp/edx-platform/reports/pavelib/pylint_fixme.report
+PYTHONPATH=scripts:scripts/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" scripts | tee /edx/app/edxapp/edx-platform/reports/scripts/pylint_fixme.report
+PYTHONPATH=docs:docs/libcommon/djangoapps:common/lib pylint --disable R,C,W,E --enable=fixme --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" docs | tee /edx/app/edxapp/edx-platform/reports/docs/pylint_fixme.report
+Number of pylint fixmes: 329
