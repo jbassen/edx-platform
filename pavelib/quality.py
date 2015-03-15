@@ -97,7 +97,7 @@ def run_pylint(options):
 
         apps = [system]
 
-        for directory in ['lib']:
+        for directory in SUB_SYSTEMS:
             try:
                 dirs = os.listdir(os.path.join(system, directory))
                 apps.extend([d for d in dirs if os.path.isdir(os.path.join(system, directory, d))])
