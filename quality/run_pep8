@@ -4,6 +4,9 @@ Python prereqs unchanged, skipping...
 pep8 lms | tee /edx/app/edxapp/edx-platform/reports/pep8/pep8.report -a
 pep8 cms | tee /edx/app/edxapp/edx-platform/reports/pep8/pep8.report -a
 pep8 common | tee /edx/app/edxapp/edx-platform/reports/pep8/pep8.report -a
+pep8 pavelib | tee /edx/app/edxapp/edx-platform/reports/pep8/pep8.report -a
+pep8 scripts | tee /edx/app/edxapp/edx-platform/reports/pep8/pep8.report -a
+pep8 docs | tee /edx/app/edxapp/edx-platform/reports/pep8/pep8.report -a
 
 
 Captured Task Output:
@@ -16,9 +19,9 @@ Traceback (most recent call last):
     return do_task()
   File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/paver/tasks.py", line 192, in do_task
     return func(**kw)
-  File "pavelib/quality.py", line 176, in run_pep8
+  File "pavelib/quality.py", line 179, in run_pep8
     "{report_dir}/pep8.report".format(report_dir=report_dir)
-  File "pavelib/quality.py", line 197, in _count_pep8_violations
+  File "pavelib/quality.py", line 200, in _count_pep8_violations
     num_lines = sum(1 for line in open(report_file))
 IOError: [Errno 2] No such file or directory: '/edx/app/edxapp/edx-platform/reports/pep8/pep8.report'
 

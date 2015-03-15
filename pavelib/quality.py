@@ -7,7 +7,7 @@ import re
 
 from .utils.envs import Env
 
-ALL_SYSTEMS = 'lms,cms,common'
+ALL_SYSTEMS = 'lms,cms,common,pavelib,scripts,docs'
 
 
 @task
@@ -30,8 +30,11 @@ def find_fixme(options):
         apps = [system]
 
         for directory in ['djangoapps', 'lib']:
-            dirs = os.listdir(os.path.join(system, directory))
-            apps.extend([d for d in dirs if os.path.isdir(os.path.join(system, directory, d))])
+            try:
+                dirs = os.listdir(os.path.join(system, directory))
+                apps.extend([d for d in dirs if os.path.isdir(os.path.join(system, directory, d))])
+            except OSError:
+                pass
 
         apps_list = ' '.join(apps)
 
@@ -91,8 +94,11 @@ def run_pylint(options):
         apps = [system]
 
         for directory in ['lib']:
-            dirs = os.listdir(os.path.join(system, directory))
-            apps.extend([d for d in dirs if os.path.isdir(os.path.join(system, directory, d))])
+            try:
+                dirs = os.listdir(os.path.join(system, directory))
+                apps.extend([d for d in dirs if os.path.isdir(os.path.join(system, directory, d))])
+            except OSError:
+                pass
 
         apps_list = ' '.join(apps)
 
