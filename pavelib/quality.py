@@ -65,19 +65,20 @@ def _get_python_path_prefix(directory_system):
     :param directory_system: the system directory to search; e.g. 'lms', 'cms'
     :returns str: a PYTHONPATH environment string for the command line
     """
-    paths = {
+    paths = [
         directory_system,
-    }
+    ]
     directories_all = set(DIRECTORIES_TOP_LEVEL_COMMON)
     directories_all.add(directory_system)
     for system in directories_all:
         for subsystem in DIRECTORIES_INNER:
             path = os.path.join(system, subsystem)
-            paths.add(path)
+            paths.append(path)
     paths = ':'.join(paths)
     environment_python_path = "PYTHONPATH={paths}".format(
         paths=paths,
     )
+    print(environment_python_path)
     return environment_python_path
 
 
@@ -106,6 +107,8 @@ def find_fixme(options):
     """
     count = 0
     options = _parse(options)
+    print(options)
+    return
 
     for system in options['systems']:
         report_dir = (Env.REPORT_DIR / system).makedirs_p()
