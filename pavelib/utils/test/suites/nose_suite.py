@@ -147,9 +147,6 @@ class SystemTestSuite(NoseTestSuite):
         # only defined in test files.
         default_test_id = (
             "{system}/djangoapps/*"
-            " common/djangoapps/*"
-            " openedx/core/djangoapps/*"
-            " openedx/tests/*"
         )
 
         if self.root in ('lms', 'cms'):

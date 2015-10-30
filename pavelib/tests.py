@@ -41,7 +41,6 @@ def test_system(options):
     """
     system = getattr(options, 'system', None)
     test_id = getattr(options, 'test_id', None)
-
     opts = {
         'failed_only': getattr(options, 'failed', None),
         'fail_fast': getattr(options, 'fail_fast', None),
@@ -52,21 +51,27 @@ def test_system(options):
         'skip_clean': getattr(options, 'skip_clean', False),
         'pdb': getattr(options, 'pdb', False),
     }
-
     if test_id:
         if not system:
             system = test_id.split('/')[0]
         if system in ['common', 'openedx']:
             system = 'lms'
         opts['test_id'] = test_id
-
     if test_id or system:
         system_tests = [suites.SystemTestSuite(system, **opts)]
     else:
         system_tests = []
-        for syst in ('cms', 'lms'):
-            system_tests.append(suites.SystemTestSuite(syst, **opts))
-
+        options_common = dict(opts)
+        options_common['test_id'] = 'common/djangoapps/*'
+        system_tests.append(suites.SystemTestSuite('lms', **options_common))
+        options_openedx = dict(opts)
+        options_openedx['test_id'] = ' '.join([
+            'openedx/core/djangoapps/*',
+            'openedx/tests/*',
+        ])
+        system_tests.append(suites.SystemTestSuite('lms', **options_openedx))
+        for system in ('cms', 'lms'):
+            system_tests.append(suites.SystemTestSuite(system, **opts))
     test_suite = suites.PythonTestSuite('python tests', subsuites=system_tests, **opts)
     test_suite.run()
 
