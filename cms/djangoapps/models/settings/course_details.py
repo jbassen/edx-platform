@@ -37,7 +37,7 @@ class CourseDetails(object):
     def __init__(self, org, course_id, run):
         # still need these for now b/c the client's screen shows these 3 fields
         self.org = org
-        self.course_id = course_id  # This actually holds the course number.
+        self.course_id = course_id
         self.run = run
         self.language = None
         self.start_date = None  # 'start'
