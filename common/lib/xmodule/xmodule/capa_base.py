@@ -195,8 +195,7 @@ class CapaFields(object):
         display_name=_("Timer Between Attempts"),
         help=_("Seconds a student must wait between submissions for a problem with multiple attempts."),
         scope=Scope.settings,
-        default=0,
-    )
+        default=0)
     weight = Float(
         display_name=_("Problem Weight"),
         help=_("Defines the number of points each problem is worth. "

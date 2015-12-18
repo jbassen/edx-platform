@@ -14,10 +14,7 @@ _ = lambda text: text
 class VideoFields(object):
     """Fields for `VideoModule` and `VideoDescriptor`."""
     display_name = String(
-        help=_(
-            'The name students see. This name appears in the course '
-            'ribbon and as a header for the video.'
-        ),
+        help=_("The name students see. This name appears in the course ribbon and as a header for the video."),
         display_name=_("Component Display Name"),
         default="Video",
         scope=Scope.settings
@@ -85,12 +82,7 @@ class VideoFields(object):
         default=""
     )
     download_video = Boolean(
-        help=_(
-            'Allow students to download versions of this video in '
-            'different formats if they cannot use the edX video player '
-            'or do not have access to YouTube. You must add at least one '
-            'non-YouTube URL in the Video File URLs field.'
-        ),
+        help=_("Allow students to download versions of this video in different formats if they cannot use the edX video player or do not have access to YouTube. You must add at least one non-YouTube URL in the Video File URLs field."),
         display_name=_("Video Download Allowed"),
         scope=Scope.settings,
         default=False
