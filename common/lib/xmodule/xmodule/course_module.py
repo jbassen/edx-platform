@@ -428,7 +428,7 @@ class CourseFields(object):
                 "short_description": "Putting the structure in place",
                 "items": [
                     {
-                        "short_description": "Add course team members",
+                        "short_description": _("Add Course Team Members"),
                         "long_description": "Give other users staff access so they can edit course material.",
                         "is_checked": False,
                         "action_url": "ManageUsers",
@@ -440,7 +440,7 @@ class CourseFields(object):
                         "long_description": "Set the start and end dates that students can enroll in the course, and the launch date for the course.",
                         "is_checked": False,
                         "action_url": "SettingsDetails",
-                        "action_text": "Edit Course Schedule &amp; Details",
+                        "action_text": "Edit Course Details &amp; Schedule",
                         "action_external": False,
                     },
                     {
