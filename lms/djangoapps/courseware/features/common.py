@@ -231,8 +231,8 @@ def get_courseware_with_tabs(course_id):
                     'clickable_tab_count': len(section.get_children()) if (type(section) == seq_module.SequenceDescriptor) else 0,
                     'tabs': [
                         {
-                        'children_count': len(tab.get_children()) if (type(tab) == vertical_block.VerticalBlock) else 0,
-                        'class': tab.__class__.__name__
+                            'children_count': len(tab.get_children()) if (type(tab) == vertical_block.VerticalBlock) else 0,
+                            'class': tab.__class__.__name__,
                         }
                         for tab in section.get_children()
                     ]

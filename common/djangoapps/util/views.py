@@ -286,9 +286,11 @@ def submit_feedback(request):
     if request.method != "POST":
         return HttpResponseNotAllowed(["POST"])
     if (
-        not settings.ZENDESK_URL or
-        not settings.ZENDESK_USER or
-        not settings.ZENDESK_API_KEY
+            not settings.ZENDESK_URL
+            or
+            not settings.ZENDESK_USER
+            or
+            not settings.ZENDESK_API_KEY
     ):
         raise Exception("Zendesk enabled but not configured")
 
@@ -330,10 +332,10 @@ def submit_feedback(request):
             return build_error_response(400, "email", required_field_errs["email"])
 
     for header, pretty in [
-        ("HTTP_REFERER", "Page"),
-        ("HTTP_USER_AGENT", "Browser"),
-        ("REMOTE_ADDR", "Client IP"),
-        ("SERVER_NAME", "Host")
+            ('HTTP_REFERER', 'Page'),
+            ('HTTP_USER_AGENT', 'Browser'),
+            ('REMOTE_ADDR', 'Client IP'),
+            ('SERVER_NAME', 'Host'),
     ]:
         additional_info[pretty] = request.META.get(header)
 

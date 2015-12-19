@@ -244,10 +244,11 @@ class SingleSectionGrader(CourseGrader):
         breakdown = [{'percent': percent, 'label': self.short_label,
                       'detail': detail, 'category': self.category, 'prominent': True}]
 
-        return {'percent': percent,
-                'section_breakdown': breakdown,
-                #No grade_breakdown here
-                }
+        return {
+            'percent': percent,
+            'section_breakdown': breakdown,
+            #No grade_breakdown here
+        }
 
 
 class AssignmentFormatGrader(CourseGrader):
@@ -358,8 +359,12 @@ class AssignmentFormatGrader(CourseGrader):
         total_percent, dropped_indices = total_with_drops(breakdown, self.drop_count)
 
         for dropped_index in dropped_indices:
-            breakdown[dropped_index]['mark'] = {'detail': u"The lowest {drop_count} {section_type} scores are dropped."
-                                                .format(drop_count=self.drop_count, section_type=self.section_type)}
+            breakdown[dropped_index]['mark'] = {
+                'detail': u"The lowest {drop_count} {section_type} scores are dropped.".format(
+                    drop_count=self.drop_count,
+                    section_type=self.section_type,
+                ),
+            }
 
         if len(breakdown) == 1:
             # if there is only one entry in a section, suppress the existing individual entry and the average,
@@ -386,7 +391,8 @@ class AssignmentFormatGrader(CourseGrader):
                 breakdown.append({'percent': total_percent, 'label': total_label,
                                   'detail': total_detail, 'category': self.category, 'prominent': True})
 
-        return {'percent': total_percent,
-                'section_breakdown': breakdown,
-                #No grade_breakdown here
-                }
+        return {
+            'percent': total_percent,
+            'section_breakdown': breakdown,
+            # No grade_breakdown here
+        }

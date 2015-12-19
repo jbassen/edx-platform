@@ -2613,9 +2613,10 @@ class ChoiceTextResponseTest(ResponseTest):
 
     def test_staff_answer_error(self):
         broken_problem = self._make_problem(
-            [("true", {"answer": "Platypus", "tolerance": "0"}),
-             ("true", {"answer": "edX", "tolerance": "0"})
-             ],
+            [
+                ('true', {'answer': 'Platypus', 'tolerance': '0'}),
+                ('true', {'answer': 'edX', 'tolerance': '0'}),
+            ],
             "checkboxtextgroup"
         )
         with self.assertRaisesRegexp(
@@ -2704,9 +2705,10 @@ class ChoiceTextResponseTest(ResponseTest):
         )
         # Two choice two input problem with both choices correct.
         checkbox_two_choices_two_inputs = self._make_problem(
-            [("true", {"answer": "123", "tolerance": "0"}),
-             ("true", {"answer": "456", "tolerance": "0"})
-             ],
+            [
+                ('true', {'answer': '123', 'tolerance': '0'}),
+                ('true', {'answer': '456', 'tolerance': '0'}),
+            ],
             "checkboxtextgroup"
         )
 

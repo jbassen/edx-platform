@@ -518,10 +518,12 @@ class SplitBulkWriteMixin(BulkOperationsMixin):
 
             if search_targets:
                 if any(
-                    'search_targets' not in record.index or
-                    field not in record.index['search_targets'] or
-                    record.index['search_targets'][field] != value
-                    for field, value in search_targets.iteritems()
+                        'search_targets' not in record.index
+                        or
+                        field not in record.index['search_targets']
+                        or
+                        record.index['search_targets'][field] != value
+                        for field, value in search_targets.iteritems()
                 ):
                     continue
 
@@ -1480,9 +1482,15 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
 
     @contract(returns='XBlock')
     def create_item(
-        self, user_id, course_key, block_type, block_id=None,
-        definition_locator=None, fields=None,
-        force=False, **kwargs
+            self,
+            user_id,
+            course_key,
+            block_type,
+            block_id=None,
+            definition_locator=None,
+            fields=None,
+            force=False,
+            **kwargs
     ):
         """
         Add a descriptor to persistence as an element
@@ -1683,9 +1691,18 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
     DEFAULT_ROOT_LIBRARY_BLOCK_ID = 'library'
 
     def create_course(
-        self, org, course, run, user_id, master_branch=None, fields=None,
-        versions_dict=None, search_targets=None, root_category='course',
-        root_block_id=None, **kwargs
+            self,
+            org,
+            course,
+            run,
+            user_id,
+            master_branch=None,
+            fields=None,
+            versions_dict=None,
+            search_targets=None,
+            root_category='course',
+            root_block_id=None,
+            **kwargs
     ):
         """
         Create a new entry in the active courses index which points to an existing or new structure. Returns
@@ -1869,8 +1886,15 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
         ) or descriptor
 
     def _update_item_from_fields(
-        self, user_id, course_key, block_key, partitioned_fields,
-        definition_locator, allow_not_found, force, **kwargs
+            self,
+            user_id,
+            course_key,
+            block_key,
+            partitioned_fields,
+            definition_locator,
+            allow_not_found,
+            force,
+            **kwargs
     ):
         """
         Broke out guts of update_item for short-circuited internal use only

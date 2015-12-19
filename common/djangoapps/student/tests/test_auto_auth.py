@@ -155,9 +155,12 @@ class AutoAuthEnabledTestCase(UrlResetMixin, TestCase):
         user_roles = user.roles.all()
         self.assertEqual(
             set(user_roles),
-            set([course_roles[FORUM_ROLE_STUDENT],
+            set([
+                course_roles[FORUM_ROLE_STUDENT],
                 course_roles[FORUM_ROLE_MODERATOR],
-                course_roles[FORUM_ROLE_ADMINISTRATOR]]))
+                course_roles[FORUM_ROLE_ADMINISTRATOR],
+            ])
+        )
 
     @ddt.data(*COURSE_IDS_DDT)
     @ddt.unpack

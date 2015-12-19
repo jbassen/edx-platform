@@ -480,10 +480,11 @@ class MatlabTest(unittest.TestCase):
 
     def test_rendering_when_completed(self):
         for status in ['correct', 'incorrect']:
-            state = {'value': 'print "good evening"',
-                     'status': status,
-                     'input_state': {},
-                     }
+            state = {
+                'value': 'print "good evening"',
+                'status': status,
+                'input_state': {},
+            }
             elt = etree.fromstring(self.xml)
 
             the_input = self.input_class(test_capa_system(), elt, state)
@@ -511,10 +512,14 @@ class MatlabTest(unittest.TestCase):
 
     @patch('capa.inputtypes.time.time', return_value=10)
     def test_rendering_while_queued(self, time):
-        state = {'value': 'print "good evening"',
-                 'status': 'incomplete',
-                 'input_state': {'queuestate': 'queued', 'queuetime': 5},
-                 }
+        state = {
+            'value': 'print "good evening"',
+            'status': 'incomplete',
+            'input_state': {
+                'queuestate': 'queued',
+                'queuetime': 5,
+            },
+        }
         elt = etree.fromstring(self.xml)
 
         the_input = self.input_class(test_capa_system(), elt, state)
@@ -1270,22 +1275,23 @@ class DragAndDropTest(unittest.TestCase):
                  'status': 'unsubmitted'}
 
         user_input = {  # order matters, for string comparison
-                        "target_outline": "false",
-                        "base_image": "/dummy-static/images/about_1.png",
-                        "draggables": [
-                            {"can_reuse": "", "label": "Label 1", "id": "1", "icon": "", "target_fields": []},
-                            {"can_reuse": "", "label": "cc", "id": "name_with_icon", "icon": "/dummy-static/images/cc.jpg", "target_fields": []},
-                            {"can_reuse": "", "label": "arrow-left", "id": "with_icon", "icon": "/dummy-static/images/arrow-left.png", "target_fields": []},
-                            {"can_reuse": "", "label": "Label2", "id": "5", "icon": "", "target_fields": []},
-                            {"can_reuse": "", "label": "Mute", "id": "2", "icon": "/dummy-static/images/mute.png", "target_fields": []},
-                            {"can_reuse": "", "label": "spinner", "id": "name_label_icon3", "icon": "/dummy-static/images/spinner.gif", "target_fields": []},
-                            {"can_reuse": "", "label": "Star", "id": "name4", "icon": "/dummy-static/images/volume.png", "target_fields": []},
-                            {"can_reuse": "", "label": "Label3", "id": "7", "icon": "", "target_fields": []}],
-                        "one_per_target": "True",
-                        "targets": [
-                            {"y": "90", "x": "210", "id": "t1", "w": "90", "h": "90"},
-                            {"y": "160", "x": "370", "id": "t2", "w": "90", "h": "90"}
-                        ]
+            'target_outline': 'false',
+            'base_image': '/dummy-static/images/about_1.png',
+            'draggables': [
+                {'can_reuse': '', 'label': 'Label 1', 'id': '1', 'icon': '', 'target_fields': []},
+                {'can_reuse': '', 'label': 'cc', 'id': 'name_with_icon', 'icon': '/dummy-static/images/cc.jpg', 'target_fields': []},
+                {'can_reuse': '', 'label': 'arrow-left', 'id': 'with_icon', 'icon': '/dummy-static/images/arrow-left.png', 'target_fields': []},
+                {'can_reuse': '', 'label': 'Label2', 'id': '5', 'icon': '', 'target_fields': []},
+                {'can_reuse': '', 'label': 'Mute', 'id': '2', 'icon': '/dummy-static/images/mute.png', 'target_fields': []},
+                {'can_reuse': '', 'label': 'spinner', 'id': 'name_label_icon3', 'icon': '/dummy-static/images/spinner.gif', 'target_fields': []},
+                {'can_reuse': '', 'label': 'Star', 'id': 'name4', 'icon': '/dummy-static/images/volume.png', 'target_fields': []},
+                {'can_reuse': '', 'label': 'Label3', 'id': '7', 'icon': '', 'target_fields': []},
+            ],
+            'one_per_target': 'True',
+            'targets': [
+                {'y': '90', 'x': '210', 'id': 't1', 'w': '90', 'h': '90'},
+                {'y': '160', 'x': '370', 'id': 't2', 'w': '90', 'h': '90'},
+            ],
         }
 
         the_input = lookup_tag('drag_and_drop_input')(test_capa_system(), element, state)

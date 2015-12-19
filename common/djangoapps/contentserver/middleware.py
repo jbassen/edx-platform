@@ -70,16 +70,21 @@ class StaticContentServer(object):
                     return HttpResponseForbidden('Unauthorized')
                 if not request.user.is_staff:
                     if (
-                        getattr(loc, 'deprecated', False)
-                        and
-                        not CourseEnrollment.is_enrolled_by_partial(
-                            request.user,
-                            loc.course_key
-                        )
+                            getattr(loc, 'deprecated', False)
+                            and
+                            not CourseEnrollment.is_enrolled_by_partial(
+                                request.user,
+                                loc.course_key
+                            )
                     ):
                         return HttpResponseForbidden('Unauthorized')
-                    if not getattr(loc, 'deprecated', False) and not CourseEnrollment.is_enrolled(
-                        request.user, loc.course_key
+                    if (
+                            not getattr(loc, 'deprecated', False)
+                            and
+                            not CourseEnrollment.is_enrolled(
+                                request.user,
+                                loc.course_key
+                            )
                     ):
                         return HttpResponseForbidden('Unauthorized')
 

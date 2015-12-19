@@ -554,7 +554,15 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         super(MongoModuleStore, self).__init__(contentstore=contentstore, **kwargs)
 
         def do_connection(
-            db, collection, host, port=27017, tz_aware=True, user=None, password=None, asset_collection=None, **kwargs
+                db,
+                collection,
+                host,
+                port=27017,
+                tz_aware=True,
+                user=None,
+                password=None,
+                asset_collection=None,
+                **kwargs
         ):
             """
             Create & open the connection, authenticate, and provide pointers to the collection

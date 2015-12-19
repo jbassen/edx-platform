@@ -177,8 +177,12 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
         Test that a range request with malformed Range (first_byte > last_byte) outputs
         416 Requested Range Not Satisfiable.
         """
-        resp = self.client.get(self.url_unlocked, HTTP_RANGE='bytes={first}-{last}'.format(
-            first=(self.length_unlocked / 2), last=(self.length_unlocked / 4))
+        resp = self.client.get(
+            self.url_unlocked,
+            HTTP_RANGE='bytes={first}-{last}'.format(
+                first=(self.length_unlocked / 2),
+                last=(self.length_unlocked / 4),
+            ),
         )
         self.assertEqual(resp.status_code, 416)
 
@@ -187,8 +191,12 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
         Test that a range request with malformed Range (first_byte, last_byte == totalLength, offset by 1 error)
         outputs 416 Requested Range Not Satisfiable.
         """
-        resp = self.client.get(self.url_unlocked, HTTP_RANGE='bytes={first}-{last}'.format(
-            first=(self.length_unlocked), last=(self.length_unlocked))
+        resp = self.client.get(
+            self.url_unlocked,
+            HTTP_RANGE="bytes={first}-{last}".format(
+                first=self.length_unlocked,
+                last=self.length_unlocked,
+            ),
         )
         self.assertEqual(resp.status_code, 416)
 

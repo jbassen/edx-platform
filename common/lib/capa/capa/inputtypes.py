@@ -1454,10 +1454,11 @@ class DesignProtein2dInput(InputTypeBase):
         """
         Note: width, hight, and target_shape are required.
         """
-        return [Attribute('width'),
-                Attribute('height'),
-                Attribute('target_shape')
-                ]
+        return [
+            Attribute('width'),
+            Attribute('height'),
+            Attribute('target_shape'),
+        ]
 
     def _extra_context(self):
         context = {
@@ -1489,9 +1490,10 @@ class EditAGeneInput(InputTypeBase):
         """
         Note: width, height, and dna_sequencee are required.
         """
-        return [Attribute('genex_dna_sequence'),
-                Attribute('genex_problem_number')
-                ]
+        return [
+            Attribute('genex_dna_sequence'),
+            Attribute('genex_problem_number'),
+        ]
 
     def _extra_context(self):
         context = {
@@ -1558,11 +1560,14 @@ class AnnotationInput(InputTypeBase):
     def _find_options(self):
         """ Returns an array of dicts where each dict represents an option. """
         elements = self.xml.findall('./options/option')
-        return [{
+        return [
+            {
                 'id': index,
                 'description': option.text,
                 'choice': option.get('choice')
-                } for (index, option) in enumerate(elements)]
+            }
+            for (index, option) in enumerate(elements)
+        ]
 
     def _validate_options(self):
         """ Raises a ValueError if the choice attribute is missing or invalid. """
