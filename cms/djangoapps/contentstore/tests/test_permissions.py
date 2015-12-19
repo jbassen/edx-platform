@@ -2,7 +2,6 @@
 Test CRUD for authorization.
 """
 import copy
-import mock
 
 from django.contrib.auth.models import User
 
