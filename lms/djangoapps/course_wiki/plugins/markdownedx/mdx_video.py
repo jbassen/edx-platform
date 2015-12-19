@@ -164,8 +164,8 @@ class VideoExtension(markdown.Extension):
         for key, value in configs:
             self.setConfig(key, value)
 
-    def add_inline(self, markdown, name, klass, re):
-        pattern = klass(re)
+    def add_inline(self, markdown, name, klass, regular_expression):
+        pattern = klass(regular_expression)
         pattern.md = markdown
         pattern.ext = self
         markdown.inlinePatterns.add(name, pattern, "<reference")
