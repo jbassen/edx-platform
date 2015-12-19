@@ -379,7 +379,7 @@ def prs_by_email(start_ref, end_ref):
     The dictionary is alphabetically ordered by email address
     The pull request list is ordered by merge date
     """
-    username, token = get_github_creds()
+    _username, token = get_github_creds()
     headers = {
         "Authorization": "token {}".format(token),
         "User-Agent": "edx-release",
