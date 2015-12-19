@@ -225,18 +225,21 @@ def get_courseware_with_tabs(course_id):
     courseware = [
         {
             'chapter_name': chapter.display_name_with_default,
-            'sections': [{
-                'section_name': section.display_name_with_default,
-                'clickable_tab_count': len(section.get_children()) if (type(section) == seq_module.SequenceDescriptor) else 0,
-                'tabs': [
-                    {
-                    'children_count': len(tab.get_children()) if (type(tab) == vertical_block.VerticalBlock) else 0,
-                    'class': tab.__class__.__name__
-                    }
-                    for tab in section.get_children()
-                ]
-            } for section in chapter.get_children()
-            if not section.hide_from_toc]
+            'sections': [
+                {
+                    'section_name': section.display_name_with_default,
+                    'clickable_tab_count': len(section.get_children()) if (type(section) == seq_module.SequenceDescriptor) else 0,
+                    'tabs': [
+                        {
+                        'children_count': len(tab.get_children()) if (type(tab) == vertical_block.VerticalBlock) else 0,
+                        'class': tab.__class__.__name__
+                        }
+                        for tab in section.get_children()
+                    ]
+                }
+                for section in chapter.get_children()
+                if not section.hide_from_toc
+            ],
         }
         for chapter in chapters
     ]

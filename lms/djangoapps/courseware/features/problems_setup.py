@@ -300,10 +300,11 @@ def answer_problem(course, problem_type, correctness):
             world.wait_for_visible(image_selector)
             image = world.css_find(image_selector).first
             (image.action_chains
-                .move_to_element(image._element)
-                .move_by_offset(offset, offset)
-                .click()
-                .perform())
+                    .move_to_element(image._element)
+                    .move_by_offset(offset, offset)
+                    .click()
+                    .perform()
+            )
 
             world.wait_for(lambda _: world.css_value(input_selector) != initial_input)
 
