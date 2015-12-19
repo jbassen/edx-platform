@@ -309,18 +309,30 @@ class TestMixedModuleStore(CommonMixedModuleStoreSetup):
         Make sure we get back the store type we expect for given mappings
         """
         self.initdb(default_ms)
-        self.assertEqual(self.store.get_modulestore_type(
-            self._course_key_from_string(self.XML_COURSEID1)), ModuleStoreEnum.Type.xml
+        self.assertEqual(
+            self.store.get_modulestore_type(
+                self._course_key_from_string(self.XML_COURSEID1)
+            ),
+            ModuleStoreEnum.Type.xml
         )
-        self.assertEqual(self.store.get_modulestore_type(
-            self._course_key_from_string(self.XML_COURSEID2)), ModuleStoreEnum.Type.xml
+        self.assertEqual(
+            self.store.get_modulestore_type(
+                self._course_key_from_string(self.XML_COURSEID2)
+            ),
+            ModuleStoreEnum.Type.xml
         )
-        self.assertEqual(self.store.get_modulestore_type(
-            self._course_key_from_string(self.MONGO_COURSEID)), default_ms
+        self.assertEqual(
+            self.store.get_modulestore_type(
+                self._course_key_from_string(self.MONGO_COURSEID)
+            ),
+            default_ms
         )
         # try an unknown mapping, it should be the 'default' store
-        self.assertEqual(self.store.get_modulestore_type(
-            SlashSeparatedCourseKey('foo', 'bar', '2012_Fall')), default_ms
+        self.assertEqual(
+            self.store.get_modulestore_type(
+                SlashSeparatedCourseKey('foo', 'bar', '2012_Fall')
+            ),
+            default_ms
         )
 
     @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)

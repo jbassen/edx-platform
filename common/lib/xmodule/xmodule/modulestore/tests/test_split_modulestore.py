@@ -1154,9 +1154,18 @@ class SplitModuleItemTests(SplitModuleTest):
         self.assertFalse(modulestore()._value_matches(['distract', 'Help', 'notme'], 'help'))
         self.assertFalse(modulestore()._block_matches({'field': ['distract', 'Help', 'notme']}, {'field': 'help'}))
         self.assertTrue(modulestore()._block_matches(
-            {'field': ['distract', 'help', 'notme'],
-                'irrelevant': 2},
-            {'field': 'help'}))
+            {
+                'field': [
+                    'distract',
+                    'help',
+                    'notme',
+                ],
+                'irrelevant': 2,
+            },
+            {
+                'field': 'help',
+            },
+        ))
         self.assertTrue(modulestore()._value_matches('I need some help', re.compile(r'help')))
         self.assertTrue(modulestore()._value_matches(['I need some help', 'today'], re.compile(r'help')))
         self.assertFalse(modulestore()._value_matches('I need some help', re.compile(r'Help')))

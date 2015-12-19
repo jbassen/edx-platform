@@ -86,7 +86,7 @@ class CapaFactory(object):
                xml=None,
                override_get_score=True,
                **kwargs
-               ):
+    ):
         """
         All parameters are optional, and are added to the created problem if specified.
 
