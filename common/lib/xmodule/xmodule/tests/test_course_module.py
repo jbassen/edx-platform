@@ -79,14 +79,14 @@ def get_dummy_course(start, announcement=None, is_new=None, advertised_start=Non
             </chapter>
          </course>
      '''.format(
-            org=ORG,
-            course=COURSE,
-            start=start,
-            is_new=is_new,
-            announcement=announcement,
-            advertised_start=advertised_start,
-            end=end,
-            certs=certs,
+        org=ORG,
+        course=COURSE,
+        start=start,
+        is_new=is_new,
+        announcement=announcement,
+        advertised_start=advertised_start,
+        end=end,
+        certs=certs,
     )
 
     return system.process_xml(start_xml)

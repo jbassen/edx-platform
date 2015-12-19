@@ -145,9 +145,22 @@ PROBLEM_DICT = {
         'kwargs': {
             'question_text': 'The correct answer is Choice 0 and input 8',
             'type': 'radiotextgroup',
-            'choices': [("true", {"answer": "8", "tolerance": "1"}),
-                        ("false", {"answer": "8", "tolerance": "1"})
-                        ]
+            'choices': [
+                (
+                    'true',
+                    {
+                        'answer': '8',
+                        'tolerance': '1',
+                    },
+                ),
+                (
+                    'false',
+                    {
+                        'answer': '8',
+                        'tolerance': '1',
+                    },
+                ),
+            ],
         },
         'correct': ['section.choicetextgroup_correct'],
         'incorrect': ['section.choicetextgroup_incorrect', 'span.incorrect'],
@@ -158,9 +171,22 @@ PROBLEM_DICT = {
         'kwargs': {
             'question_text': 'The correct answer is Choice 0 and input 8',
             'type': 'checkboxtextgroup',
-            'choices': [("true", {"answer": "8", "tolerance": "1"}),
-                        ("false", {"answer": "8", "tolerance": "1"})
-                        ]
+            'choices': [
+                (
+                    'true',
+                    {
+                        'answer': '8',
+                        'tolerance': '1',
+                    },
+                ),
+                (
+                    'false',
+                    {
+                        'answer': '8',
+                        'tolerance': '1',
+                    },
+                ),
+            ],
         },
         'correct': ['span.correct'],
         'incorrect': ['span.incorrect'],

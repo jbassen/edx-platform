@@ -159,10 +159,10 @@ class JavascriptInputTest(unittest.TestCase):
 
         xml_str = """<javascriptinput id="prob_1_2" params="{params}" problem_state="{ps}"
                                     display_class="{dc}" display_file="{df}"/>""".format(
-            params=params,
-            ps=quote_attr(problem_state),
-            dc=display_class,
-            df=display_file,
+                params=params,
+                ps=quote_attr(problem_state),
+                dc=display_class,
+                df=display_file,
         )
 
         element = etree.fromstring(xml_str)

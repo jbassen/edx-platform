@@ -203,10 +203,16 @@ class BulkOperationsMixin(object):
         if ignore_case:
             for key, record in self._active_bulk_ops.records.iteritems():
                 # Shortcut: check basic equivalence for cases where org/course/run might be None.
-                if key == course_key or (
-                    key.org.lower() == course_key.org.lower() and
-                    key.course.lower() == course_key.course.lower() and
-                    key.run.lower() == course_key.run.lower()
+                if (
+                        key == course_key
+                        or
+                        (
+                            key.org.lower() == course_key.org.lower()
+                            and
+                            key.course.lower() == course_key.course.lower()
+                            and
+                            key.run.lower() == course_key.run.lower()
+                        )
                 ):
                     return record
 

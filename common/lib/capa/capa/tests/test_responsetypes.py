@@ -368,8 +368,12 @@ class SymbolicResponseTest(ResponseTest):  # pylint: disable=missing-docstring
             self.build_problem(math_display=True, expect="2*x+3*y", num_inputs=3)
 
     def _assert_symbolic_grade(
-        self, problem, student_input, dynamath_input, expected_correctness,
-        snuggletex_resp=""
+            self,
+            problem,
+            student_input,
+            dynamath_input,
+            expected_correctness,
+            snuggletex_resp='',
     ):
         """
         Assert that the symbolic response has a certain grade.

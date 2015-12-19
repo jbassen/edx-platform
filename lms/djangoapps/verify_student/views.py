@@ -431,12 +431,12 @@ class PayAndVerifyView(View):
         return render_to_response("verify_student/pay_and_verify.html", context)
 
     def _redirect_if_necessary(
-        self,
-        message,
-        already_verified,
-        already_paid,
-        is_enrolled,
-        course_key
+            self,
+            message,
+            already_verified,
+            already_paid,
+            is_enrolled,
+            course_key,
     ):
         """Redirect the user to a more appropriate page if necessary.
 

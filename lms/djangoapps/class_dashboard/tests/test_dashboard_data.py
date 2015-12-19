@@ -261,11 +261,12 @@ class TestGetProblemGradeDistribution(SharedModuleStoreTestCase):
         course_id = self.course.id
         data_type = 'subsection'
 
-        data = json.dumps({'sections': sections,
-                           'tooltips': tooltips,
-                           'course_id': course_id.to_deprecated_string(),
-                           'data_type': data_type,
-                           })
+        data = json.dumps({
+            'sections': sections,
+            'tooltips': tooltips,
+            'course_id': course_id.to_deprecated_string(),
+            'data_type': data_type,
+        })
 
         response = self.client.post(url, {'data': data})
         # Check response contains 1 line for header, 1 line for Section and 1 line for Subsection
@@ -297,11 +298,12 @@ class TestGetProblemGradeDistribution(SharedModuleStoreTestCase):
         course_id = self.course.id
         data_type = 'problem'
 
-        data = json.dumps({'sections': sections,
-                           'tooltips': tooltips,
-                           'course_id': course_id.to_deprecated_string(),
-                           'data_type': data_type,
-                           })
+        data = json.dumps({
+            'sections': sections,
+            'tooltips': tooltips,
+            'course_id': course_id.to_deprecated_string(),
+            'data_type': data_type,
+        })
 
         response = self.client.post(url, {'data': data})
         # Check response contains 1 line for header, 1 line for Sections and 2 lines for problems

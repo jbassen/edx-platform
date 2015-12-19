@@ -56,9 +56,10 @@ class CodeMirror(BaseEditor):
         css = {
             'all': ("js/vendor/CodeMirror/codemirror.css",)
         }
-        js = ("js/vendor/CodeMirror/codemirror.js",
-              "js/vendor/CodeMirror/addons/xml.js",
-              "js/vendor/CodeMirror/addons/edx_markdown.js",
-              "js/wiki/accessible.js",
-              "js/wiki/CodeMirror.init.js",
-              )
+        js = (
+            'js/vendor/CodeMirror/codemirror.js',
+            'js/vendor/CodeMirror/addons/xml.js',
+            'js/vendor/CodeMirror/addons/edx_markdown.js',
+            'js/wiki/accessible.js',
+            'js/wiki/CodeMirror.init.js',
+        )
