@@ -145,8 +145,9 @@ class VideoEventProcessor(object):
 
             # For the iOS build that is returning a +30 for back skip 30
             if (
-                context['application']['version'] == "1.0.02" and
-                context['application']['name'] == "edx.mobileapp.iOS"
+                    context['application']['version'] == '1.0.02'
+                    and
+                    context['application']['name'] == 'edx.mobileapp.iOS'
             ):
                 if 'requested_skip_interval' in payload and 'type' in payload:
                     if (

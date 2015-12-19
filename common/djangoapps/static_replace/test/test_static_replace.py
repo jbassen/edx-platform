@@ -148,9 +148,10 @@ def test_regex():
            '"/static/foo.png"',
            "'/static/foo.png'")
 
-    no = ('"/not-static/foo.png"',
-          '"/static/foo',  # no matching quote
-          )
+    no = (
+        '"/not-static/foo.png"',
+        '"/static/foo',  # no matching quote
+    )
 
     regex = _url_replace_regex('/static/')
 

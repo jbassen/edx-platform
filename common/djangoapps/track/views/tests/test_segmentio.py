@@ -429,17 +429,18 @@ class SegmentIOTrackingTestCase(EventTrackingTestCase):
         (-30, -30, "type", "onSkipSeek", "onSkipSeek", "edx.video.position.changed", "edx.video.position.changed", 'edx.mobileapp.android', '1.0.02')
     )
     @unpack
-    def test_previous_builds(self,
-                             requested_skip_interval,
-                             expected_skip_interval,
-                             seek_type_key,
-                             seek_type,
-                             expected_seek_type,
-                             name,
-                             expected_name,
-                             platform,
-                             version,
-                             ):
+    def test_previous_builds(
+            self,
+            requested_skip_interval,
+            expected_skip_interval,
+            seek_type_key,
+            seek_type,
+            expected_seek_type,
+            name,
+            expected_name,
+            platform,
+            version,
+    ):
         """
         Test backwards compatibility of previous app builds
 

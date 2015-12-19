@@ -300,15 +300,16 @@ def _signup(request, eamap, retfun=None):
     # but this only affects username, not fullname
     username = re.sub(r'\s', '', _flatten_to_ascii(eamap.external_name), flags=re.UNICODE)
 
-    context = {'has_extauth_info': True,
-               'show_signup_immediately': True,
-               'extauth_domain': eamap.external_domain,
-               'extauth_id': eamap.external_id,
-               'extauth_email': eamap.external_email,
-               'extauth_username': username,
-               'extauth_name': eamap.external_name,
-               'ask_for_tos': True,
-               }
+    context = {
+        'has_extauth_info': True,
+        'show_signup_immediately': True,
+        'extauth_domain': eamap.external_domain,
+        'extauth_id': eamap.external_id,
+        'extauth_email': eamap.external_email,
+        'extauth_username': username,
+        'extauth_name': eamap.external_name,
+        'ask_for_tos': True,
+    }
 
     # Some openEdX instances can't have terms of service for shib users, like
     # according to Stanford's Office of General Counsel
@@ -564,9 +565,11 @@ def course_specific_login(request, course_id):
 
     # now the dispatching conditionals.  Only shib for now
     if (
-        settings.FEATURES.get('AUTH_USE_SHIB') and
-        course.enrollment_domain and
-        course.enrollment_domain.startswith(SHIBBOLETH_DOMAIN_PREFIX)
+            settings.FEATURES.get('AUTH_USE_SHIB')
+            and
+            course.enrollment_domain
+            and
+            course.enrollment_domain.startswith(SHIBBOLETH_DOMAIN_PREFIX)
     ):
         return redirect_with_get('shib-login', request.GET)
 
@@ -588,9 +591,11 @@ def course_specific_register(request, course_id):
 
     # now the dispatching conditionals.  Only shib for now
     if (
-        settings.FEATURES.get('AUTH_USE_SHIB') and
-        course.enrollment_domain and
-        course.enrollment_domain.startswith(SHIBBOLETH_DOMAIN_PREFIX)
+            settings.FEATURES.get('AUTH_USE_SHIB')
+            and
+            course.enrollment_domain
+            and
+            course.enrollment_domain.startswith(SHIBBOLETH_DOMAIN_PREFIX)
     ):
         # shib-login takes care of both registration and login flows
         return redirect_with_get('shib-login', request.GET)

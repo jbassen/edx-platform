@@ -296,12 +296,13 @@ def _cert_info(user, course_overview, cert_status, course_mode):  # pylint: disa
 
     default_status = 'processing'
 
-    default_info = {'status': default_status,
-                    'show_disabled_download_button': False,
-                    'show_download_url': False,
-                    'show_survey_button': False,
-                    'can_unenroll': True
-                    }
+    default_info = {
+        'status': default_status,
+        'show_disabled_download_button': False,
+        'show_download_url': False,
+        'show_survey_button': False,
+        'can_unenroll': True,
+    }
 
     if cert_status is None:
         return default_info
@@ -1082,7 +1083,8 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
                 + "<br/><br/>" +
                 _("Use your {platform_name} username and password to log into {platform_name} below, "
                   "and then link your {platform_name} account with {provider_name} from your dashboard.").format(
-                      platform_name=platform_name, provider_name=requested_provider.name
+                      platform_name=platform_name,
+                      provider_name=requested_provider.name,
                 )
                 + "<br/><br/>" +
                 _("If you don't have an {platform_name} account yet, "
