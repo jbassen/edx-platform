@@ -151,9 +151,11 @@ def track_segmentio_event(request):  # pylint: disable=too-many-statements
         a.lower() for a in getattr(settings, 'TRACKING_SEGMENTIO_DISALLOWED_SUBSTRING_NAMES', [])
     ]
     if (
-        not segment_event_type or
-        (segment_event_type.lower() not in allowed_types) or
-        any(disallowed_subs_name in segment_event_name.lower() for disallowed_subs_name in disallowed_substring_names)
+            not segment_event_type
+            or
+            (segment_event_type.lower() not in allowed_types)
+            or
+            any(disallowed_subs_name in segment_event_name.lower() for disallowed_subs_name in disallowed_substring_names)
     ):
         raise EventValidationError(WARNING_IGNORED_TYPE)
 

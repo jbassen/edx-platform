@@ -886,8 +886,13 @@ class MatlabInput(CodeInput):
             nothing
         """
         # check the queuekey against the saved queuekey
-        if('queuestate' in self.input_state and self.input_state['queuestate'] == 'queued'
-                and self.input_state['queuekey'] == queuekey):
+        if (
+                'queuestate' in self.input_state
+                and
+                self.input_state['queuestate'] == 'queued'
+                and
+                self.input_state['queuekey'] == queuekey
+        ):
             msg = self._parse_data(queue_msg)
             # save the queue message so that it can be rendered later
             self.input_state['queue_msg'] = msg
@@ -1103,9 +1108,10 @@ class Crystallography(InputTypeBase):
         """
         Note: height, width are required.
         """
-        return [Attribute('height'),
-                Attribute('width'),
-                ]
+        return [
+            Attribute('height'),
+            Attribute('width'),
+        ]
 
 # -------------------------------------------------------------------------
 
@@ -1125,11 +1131,12 @@ class VseprInput(InputTypeBase):
         """
         Note: height, width, molecules and geometries are required.
         """
-        return [Attribute('height'),
-                Attribute('width'),
-                Attribute('molecules'),
-                Attribute('geometries'),
-                ]
+        return [
+            Attribute('height'),
+            Attribute('width'),
+            Attribute('molecules'),
+            Attribute('geometries'),
+        ]
 
 #-------------------------------------------------------------------------
 

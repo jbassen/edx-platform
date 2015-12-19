@@ -151,8 +151,9 @@ class VideoEventProcessor(object):
             ):
                 if 'requested_skip_interval' in payload and 'type' in payload:
                     if (
-                        payload['requested_skip_interval'] == 30 and
-                        payload['type'] == "onSkipSeek"
+                            payload['requested_skip_interval'] == 30
+                            and
+                            payload['type'] == 'onSkipSeek'
                     ):
                         payload['requested_skip_interval'] = -30
 

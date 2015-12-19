@@ -143,8 +143,11 @@ class AutoAuthEnabledTestCase(UrlResetMixin, TestCase):
         user_roles = user.roles.all()
         self.assertEqual(
             set(user_roles),
-            set([course_roles[FORUM_ROLE_STUDENT],
-                course_roles[FORUM_ROLE_MODERATOR]]))
+            set([
+                course_roles[FORUM_ROLE_STUDENT],
+                course_roles[FORUM_ROLE_MODERATOR],
+            ])
+        )
 
         # check multiple roles work.
         self._auto_auth({

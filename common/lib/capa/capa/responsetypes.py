@@ -3666,10 +3666,11 @@ class ChoiceTextResponse(LoncapaResponse):
     human_name = _('Checkboxes With Text Input')
     tags = ['choicetextresponse']
     max_inputfields = 1
-    allowed_inputfields = ['choicetextgroup',
-                           'checkboxtextgroup',
-                           'radiotextgroup'
-                           ]
+    allowed_inputfields = [
+        'choicetextgroup',
+        'checkboxtextgroup',
+        'radiotextgroup',
+    ]
 
     def __init__(self, *args, **kwargs):
         self.correct_inputs = {}
@@ -3775,7 +3776,10 @@ class ChoiceTextResponse(LoncapaResponse):
         """
 
         for index, choice in enumerate(
-            self.xml.xpath('//*[@id=$id]//choice', id=self.xml.get('id'))
+                self.xml.xpath(
+                    '//*[@id=$id]//choice',
+                    id=self.xml.get('id')
+                )
         ):
             # Set the name attribute for <choices>
             # "bc" is appended at the end to indicate that this is a

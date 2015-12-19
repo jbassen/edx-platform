@@ -1081,10 +1081,12 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
                     platform_name=platform_name, provider_name=requested_provider.name
                 )
                 + "<br/><br/>" +
-                _("Use your {platform_name} username and password to log into {platform_name} below, "
-                  "and then link your {platform_name} account with {provider_name} from your dashboard.").format(
-                      platform_name=platform_name,
-                      provider_name=requested_provider.name,
+                _(
+                    "Use your {platform_name} username and password to log into {platform_name} below, "
+                    "and then link your {platform_name} account with {provider_name} from your dashboard."
+                ).format(
+                    platform_name=platform_name,
+                    provider_name=requested_provider.name,
                 )
                 + "<br/><br/>" +
                 _("If you don't have an {platform_name} account yet, "

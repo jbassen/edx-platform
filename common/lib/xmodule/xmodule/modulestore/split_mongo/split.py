@@ -2548,7 +2548,12 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
 
     @contract(block_map="dict(BlockKey: dict)", block_key=BlockKey)
     def inherit_settings(
-        self, block_map, block_key, inherited_settings_map, inheriting_settings=None, inherited_from=None
+            self,
+            block_map,
+            block_key,
+            inherited_settings_map,
+            inheriting_settings=None,
+            inherited_from=None,
     ):
         """
         Updates block_data with any inheritable setting set by an ancestor and recurses to children.
