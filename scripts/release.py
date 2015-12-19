@@ -145,7 +145,7 @@ def get_github_creds():
         token = github_creds.get("token", "")
         if username and token:
             return (username, token)
-    return None
+    return (None, None)
 
 
 def create_github_creds():
