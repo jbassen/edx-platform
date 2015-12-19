@@ -527,6 +527,9 @@ def generate_email(start_ref, end_ref, release_date=None):
 
 
 def cut_release_branch(release_date=None):
+    """
+    Cut a release branch and return its name
+    """
     if release_date is None:
         release_date = default_release_date()
 
