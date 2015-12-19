@@ -1739,9 +1739,16 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
         )
 
     def _create_courselike(
-        self, locator, user_id, master_branch, fields=None,
-        versions_dict=None, search_targets=None, root_category='course',
-        root_block_id=None, **kwargs
+            self,
+            locator,
+            user_id,
+            master_branch,
+            fields=None,
+            versions_dict=None,
+            search_targets=None,
+            root_category='course',
+            root_block_id=None,
+            **kwargs
     ):
         """
         Internal code for creating a course or library

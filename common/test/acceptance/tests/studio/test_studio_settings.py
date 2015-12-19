@@ -319,12 +319,13 @@ class AdvancedSettingsValidationTest(StudioCourseTest):
         """
         Test that manual changes button in the modal keeps settings unchanged
         """
-        inputs = {"Course Display Name": 1,
-                  "Advanced Module List": 1,
-                  "Discussion Topic Mapping": 1,
-                  "Maximum Attempts": '"string"',
-                  "Course Announcement Date": '"string"',
-                  }
+        inputs = {
+            'Course Display Name': 1,
+            'Advanced Module List': 1,
+            'Discussion Topic Mapping': 1,
+            'Maximum Attempts': '"string"',
+            'Course Announcement Date': '"string"',
+        }
 
         self.set_wrong_inputs_to_fields()
         self.advanced_settings.wait_for_modal_load()

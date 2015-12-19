@@ -71,12 +71,12 @@ def track_memory_usage(metric, course_id):
 
 
 def _generate_items_for_subtask(
-    item_querysets,  # pylint: disable=bad-continuation
-    item_fields,
-    total_num_items,
-    items_per_task,
-    total_num_subtasks,
-    course_id,
+        item_querysets,
+        item_fields,
+        total_num_items,
+        items_per_task,
+        total_num_subtasks,
+        course_id,
 ):
     """
     Generates a chunk of "items" that should be passed into a subtask.

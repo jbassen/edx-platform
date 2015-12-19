@@ -38,16 +38,16 @@ class CorrectMap(object):
 
     # See the documentation for 'set_dict' for the use of kwargs
     def set(
-        self,
-        answer_id=None,
-        correctness=None,
-        npoints=None,
-        msg='',
-        hint='',
-        hintmode=None,
-        queuestate=None,
-        answervariable=None,    # pylint: disable=C0330
-        **kwargs
+            self,
+            answer_id=None,
+            correctness=None,
+            npoints=None,
+            msg='',
+            hint='',
+            hintmode=None,
+            queuestate=None,
+            answervariable=None,  # pylint: disable=C0330
+            **kwargs
     ):
 
         if answer_id is not None:

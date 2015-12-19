@@ -1141,15 +1141,24 @@ class ModuleStoreReadBase(BulkOperationsMixin, ModuleStoreRead):
 
     # pylint: disable=invalid-name
     def __init__(
-        self,
-        contentstore=None,
-        doc_store_config=None,  # ignore if passed up
-        metadata_inheritance_cache_subsystem=None, request_cache=None,
-        xblock_mixins=(), xblock_select=None, disabled_xblock_types=(),  # pylint: disable=bad-continuation
-        # temporary parms to enable backward compatibility. remove once all envs migrated
-        db=None, collection=None, host=None, port=None, tz_aware=True, user=None, password=None,
-        # allow lower level init args to pass harmlessly
-        ** kwargs
+            self,
+            contentstore=None,
+            doc_store_config=None,  # ignore if passed up
+            metadata_inheritance_cache_subsystem=None,
+            request_cache=None,
+            xblock_mixins=(),
+            xblock_select=None,
+            disabled_xblock_types=(),  # pylint: disable=bad-continuation
+            # temporary parms to enable backward compatibility. remove once all envs migrated
+            db=None,
+            collection=None,
+            host=None,
+            port=None,
+            tz_aware=True,
+            user=None,
+            password=None,
+            # allow lower level init args to pass harmlessly
+            **kwargs
     ):
         '''
         Set up the error-tracking logic.

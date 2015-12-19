@@ -2010,9 +2010,9 @@ def password_reset(request):
 
 
 def password_reset_confirm_wrapper(
-    request,
-    uidb36=None,
-    token=None,
+        request,
+        uidb36=None,
+        token=None,
 ):
     """ A wrapper around django.contrib.auth.views.password_reset_confirm.
         Needed because we want to set the user as active at this step.

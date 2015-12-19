@@ -152,8 +152,14 @@ class TestNavigation(ModuleStoreTestCase, LoginEnrollmentTestCase):
         self.enroll(self.course, True)
         self.enroll(self.test_course, True)
 
-        resp = self.client.get(reverse('courseware',
-                               kwargs={'course_id': self.course.id.to_deprecated_string()}))
+        resp = self.client.get(
+            reverse(
+                'courseware',
+                kwargs={
+                    'course_id': self.course.id.to_deprecated_string(),
+                },
+            )
+        )
 
         self.assertRedirects(resp, reverse(
             'courseware_section', kwargs={'course_id': self.course.id.to_deprecated_string(),
@@ -176,8 +182,14 @@ class TestNavigation(ModuleStoreTestCase, LoginEnrollmentTestCase):
             'section': 'Welcome',
         }))
 
-        resp = self.client.get(reverse('courseware',
-                               kwargs={'course_id': self.course.id.to_deprecated_string()}))
+        resp = self.client.get(
+            reverse(
+                'courseware',
+                kwargs={
+                    'course_id': self.course.id.to_deprecated_string(),
+                },
+            )
+        )
 
         redirect_url = reverse(
             'courseware_chapter',

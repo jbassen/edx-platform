@@ -131,12 +131,12 @@ class TestCourseActionUIStateManager(TestCourseActionStateManagerBase):
     def test_find_all_for_display_filter_exclude(self, action_class):
         self.init_course_action_states(action_class)
         for course_action_state, filter_state, exclude_state in (
-            (self.courses_with_state1, 'state1', None),  # filter for state1
-            (self.courses_with_state2, 'state2', None),  # filter for state2
-            (self.courses_with_state2 + self.courses_with_state3, None, 'state1'),  # exclude state1
-            (self.courses_with_state1 + self.courses_with_state3, None, 'state2'),  # exclude state2
-            (self.courses_with_state1, 'state1', 'state2'),  # filter for state1, exclude state2
-            ([], 'state1', 'state1'),  # filter for state1, exclude state1
+                (self.courses_with_state1, 'state1', None),  # filter for state1
+                (self.courses_with_state2, 'state2', None),  # filter for state2
+                (self.courses_with_state2 + self.courses_with_state3, None, 'state1'),  # exclude state1
+                (self.courses_with_state1 + self.courses_with_state3, None, 'state2'),  # exclude state2
+                (self.courses_with_state1, 'state1', 'state2'),  # filter for state1, exclude state2
+                ([], 'state1', 'state1'),  # filter for state1, exclude state1
         ):
             self.assertCourseActionStatesEqual(
                 course_action_state,

@@ -141,9 +141,18 @@ class FormDescription(object):
         self._field_overrides = defaultdict(dict)
 
     def add_field(
-        self, name, label=u"", field_type=u"text", default=u"",
-        placeholder=u"", instructions=u"", required=True, restrictions=None,
-        options=None, include_default_option=False, error_messages=None
+            self,
+            name,
+            label=u"",
+            field_type=u"text",
+            default=u"",
+            placeholder=u"",
+            instructions=u"",
+            required=True,
+            restrictions=None,
+            options=None,
+            include_default_option=False,
+            error_messages=None,
     ):
         """Add a field to the form description.
 

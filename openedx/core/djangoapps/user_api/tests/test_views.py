@@ -925,9 +925,7 @@ class RegistrationViewTest(ThirdPartyAuthTestMixin, ApiTestCase):
                 u"label": u"Password",
                 u"restrictions": {
                     'min_length': PASSWORD_MIN_LENGTH,
-                    'max_length': PASSWORD_MAX_LENGTH
-                    # 'min_length': account_api.PASSWORD_MIN_LENGTH,
-                    # 'max_length': account_api.PASSWORD_MAX_LENGTH
+                    'max_length': PASSWORD_MAX_LENGTH,
                 },
             }
         )
@@ -1776,7 +1774,9 @@ class ThirdPartyRegistrationTestMixin(ThirdPartyOAuthTestMixin):
 
 @skipUnless(settings.FEATURES.get("ENABLE_THIRD_PARTY_AUTH"), "third party auth not enabled")
 class TestFacebookRegistrationView(
-    ThirdPartyRegistrationTestMixin, ThirdPartyOAuthTestMixinFacebook, TransactionTestCase
+        ThirdPartyRegistrationTestMixin,
+        ThirdPartyOAuthTestMixinFacebook,
+        TransactionTestCase,
 ):
     """Tests the User API registration endpoint with Facebook authentication."""
     def test_social_auth_exception(self):
@@ -1792,7 +1792,9 @@ class TestFacebookRegistrationView(
 
 @skipUnless(settings.FEATURES.get("ENABLE_THIRD_PARTY_AUTH"), "third party auth not enabled")
 class TestGoogleRegistrationView(
-    ThirdPartyRegistrationTestMixin, ThirdPartyOAuthTestMixinGoogle, TransactionTestCase
+        ThirdPartyRegistrationTestMixin,
+        ThirdPartyOAuthTestMixinGoogle,
+        TransactionTestCase,
 ):
     """Tests the User API registration endpoint with Google authentication."""
     pass

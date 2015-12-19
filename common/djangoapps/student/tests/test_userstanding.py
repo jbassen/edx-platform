@@ -38,10 +38,10 @@ class UserStandingTest(TestCase):
         self.admin_client = Client()
 
         for user, client in [
-            (self.bad_user, self.bad_user_client),
-            (self.good_user, self.good_user_client),
-            (self.non_staff, self.non_staff_client),
-            (self.admin, self.admin_client),
+                (self.bad_user, self.bad_user_client),
+                (self.good_user, self.good_user_client),
+                (self.non_staff, self.non_staff_client),
+                (self.admin, self.admin_client),
         ]:
             client.login(username=user.username, password='test')
 

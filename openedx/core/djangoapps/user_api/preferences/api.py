@@ -255,8 +255,8 @@ def update_email_opt_in(user, org, opt_in):
     except ObjectDoesNotExist:
         raise UserNotFound()
     if user_profile.requires_parental_consent(
-        age_limit=getattr(settings, 'EMAIL_OPTIN_MINIMUM_AGE', 13),
-        default_requires_consent=False,
+            age_limit=getattr(settings, 'EMAIL_OPTIN_MINIMUM_AGE', 13),
+            default_requires_consent=False,
     ):
         opt_in = False
 

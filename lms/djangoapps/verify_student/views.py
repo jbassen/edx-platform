@@ -205,10 +205,12 @@ class PayAndVerifyView(View):
 
     @method_decorator(login_required)
     def get(
-        self, request, course_id,
-        always_show_payment=False,
-        current_step=None,
-        message=FIRST_TIME_VERIFY_MSG
+            self,
+            request,
+            course_id,
+            always_show_payment=False,
+            current_step=None,
+            message=FIRST_TIME_VERIFY_MSG,
     ):
         """
         Render the payment and verification flow.

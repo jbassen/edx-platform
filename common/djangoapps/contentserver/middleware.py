@@ -28,8 +28,9 @@ class StaticContentServer(object):
     def process_request(self, request):
         # look to see if the request is prefixed with an asset prefix tag
         if (
-            request.path.startswith('/' + XASSET_LOCATION_TAG + '/') or
-            request.path.startswith('/' + AssetLocator.CANONICAL_NAMESPACE)
+                request.path.startswith('/' + XASSET_LOCATION_TAG + '/')
+                or
+                request.path.startswith('/' + AssetLocator.CANONICAL_NAMESPACE)
         ):
             if AssetLocator.CANONICAL_NAMESPACE in request.path:
                 request.path = request.path.replace('block/', 'block@', 1)
@@ -68,8 +69,13 @@ class StaticContentServer(object):
                 if not hasattr(request, "user") or not request.user.is_authenticated():
                     return HttpResponseForbidden('Unauthorized')
                 if not request.user.is_staff:
-                    if getattr(loc, 'deprecated', False) and not CourseEnrollment.is_enrolled_by_partial(
-                        request.user, loc.course_key
+                    if (
+                        getattr(loc, 'deprecated', False)
+                        and
+                        not CourseEnrollment.is_enrolled_by_partial(
+                            request.user,
+                            loc.course_key
+                        )
                     ):
                         return HttpResponseForbidden('Unauthorized')
                     if not getattr(loc, 'deprecated', False) and not CourseEnrollment.is_enrolled(

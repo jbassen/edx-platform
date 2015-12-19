@@ -161,7 +161,9 @@ class JavascriptInputTest(unittest.TestCase):
                                     display_class="{dc}" display_file="{df}"/>""".format(
             params=params,
             ps=quote_attr(problem_state),
-            dc=display_class, df=display_file)
+            dc=display_class,
+            df=display_file,
+        )
 
         element = etree.fromstring(xml_str)
 

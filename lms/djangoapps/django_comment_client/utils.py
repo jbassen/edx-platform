@@ -623,8 +623,13 @@ def add_courseware_context(content_list, course, user, id_map=None):
             location = id_map[commentable_id]["location"].to_deprecated_string()
             title = id_map[commentable_id]["title"]
 
-            url = reverse('jump_to', kwargs={"course_id": course.id.to_deprecated_string(),
-                          "location": location})
+            url = reverse(
+                'jump_to',
+                kwargs={
+                    'course_id': course.id.to_deprecated_string(),
+                    'location': location,
+                },
+            )
 
             content.update({"courseware_url": url, "courseware_title": title})
 
