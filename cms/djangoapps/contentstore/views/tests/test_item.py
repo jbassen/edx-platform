@@ -1382,7 +1382,7 @@ class TestComponentTemplates(CourseTestCase):
         self.assertIn('Advanced', button_names)
         self.assertEqual(len(templates[0]['templates']), 3)
         template_display_names = [template['display_name'] for template in templates[0]['templates']]
-        self.assertEqual(sorted(template_display_names), sorted(['Annotation', 'Open Response Assessment', 'Peer Grading Interface']))
+        self.assertEqual(template_display_names, ['Annotation', 'Open Response Assessment', 'Peer Grading Interface'])
 
 
 @ddt.ddt
