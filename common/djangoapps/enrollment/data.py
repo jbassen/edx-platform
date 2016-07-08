@@ -21,6 +21,16 @@ from student.models import (
 
 log = logging.getLogger(__name__)
 
+def get_roster(course_id):
+    roster = []
+    queryset = CourseEnrollment.objects.filter(
+        course_id=course_id,
+        is_active=True
+    ).order_by('created')
+    # You may need/want to implement your own serializer in serializers.py
+    roster = CourseEnrollmentSerializer(queryset, many=True).data
+    return roster
+
 
 def get_course_enrollments(user_id):
     """Retrieve a list representing all aggregated data for a user's course enrollments.

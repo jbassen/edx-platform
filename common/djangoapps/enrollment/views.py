@@ -31,6 +31,7 @@ from enrollment.errors import (
     CourseModeNotFoundError, CourseEnrollmentExistsError
 )
 from student.auth import user_has_role
+from student.models import CourseAccessRole
 from student.models import User
 from student.roles import CourseStaffRole, GlobalStaff
 
@@ -276,6 +277,39 @@ class EnrollmentCourseDetailView(APIView):
                     ).format(course_id=course_id)
                 }
             )
+
+
+# You need to find out what this does before including it!
+@can_disable_rate_limit
+class EnrollmentCourseRosterView(APIView, ApiKeyPermissionMixIn):
+    # Since the course about page on the marketing site
+    # uses this API to auto-enroll users, we need to support
+    # cross-domain CSRF.
+    @method_decorator(ensure_csrf_cookie_cross_domain)
+    def get(self, request, course_id=None):
+        """
+        TODO: Add documentation here
+        """
+        user = request.GET.get('user', request.user)
+        instructors = CourseAccessRole.objects.filter(
+            user_id=user.id,
+            course_id=course_id,
+            role='instructor',
+        )
+        user_is_instructor = len(instructors) == 1
+
+        # Maybe this is useful?
+        # self.has_api_key_permissions(request):
+        if not user_is_instructor:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "message": u"TODO: More apt error message",
+                }
+            )
+        roster = api.get_roster(course_id)
+        response = Response(roster)
+        return response
 
 
 @can_disable_rate_limit

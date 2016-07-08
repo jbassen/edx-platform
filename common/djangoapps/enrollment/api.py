@@ -131,6 +131,9 @@ def get_enrollment(user_id, course_id):
     """
     return _data_api().get_course_enrollment(user_id, course_id)
 
+# This assumes that proper access has been checked previously
+def get_roster(course_id):
+    return _data_api().get_roster(course_id)
 
 def add_enrollment(user_id, course_id, mode='honor', is_active=True):
     """Enrolls a user in a course.
