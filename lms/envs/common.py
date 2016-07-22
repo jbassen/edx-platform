@@ -33,7 +33,7 @@ import sys
 import os
 import imp
 
-from path import path
+from path import Path as path
 from warnings import simplefilter
 from django.utils.translation import ugettext_lazy as _
 
@@ -47,7 +47,6 @@ from lms.djangoapps.lms_xblock.mixin import LmsBlockMixin
 ################################### FEATURES ###################################
 # The display name of the platform to be used in templates/emails/etc.
 PLATFORM_NAME = "Your Platform Name Here"
-ACCOUNT_NAME = "Your Account Name Here"
 CC_MERCHANT_NAME = PLATFORM_NAME
 # Shows up in the platform footer, eg "(c) COPYRIGHT_YEAR"
 COPYRIGHT_YEAR = "2015"
@@ -65,8 +64,6 @@ DISCUSSION_SETTINGS = {
 
 # Features
 FEATURES = {
-    'USE_DJANGO_PIPELINE': True,
-
     'DISPLAY_DEBUG_INFO_TO_STAFF': True,
     'DISPLAY_HISTOGRAMS_TO_STAFF': False,  # For large courses this slows down courseware access for staff.
 
@@ -183,14 +180,8 @@ FEATURES = {
     # Staff Debug tool.
     'ENABLE_STUDENT_HISTORY_VIEW': True,
 
-    # Segment.io for LMS--need to explicitly turn it on for production.
-    'SEGMENT_IO_LMS': False,
-
     # Provide a UI to allow users to submit feedback from the LMS (left-hand help modal)
     'ENABLE_FEEDBACK_SUBMISSION': False,
-
-    # Provide a UI to allow users to report problems in LMS (left-hand modal)
-    'ENABLE_PROBLEM_REPORTING': False,
 
     # Turn on a page that lets staff enter Python code to be run in the
     # sandbox, for testing whether it's enabled properly.
@@ -199,7 +190,7 @@ FEATURES = {
     # Enable URL that shows information about the status of variuous services
     'ENABLE_SERVICE_STATUS': False,
 
-    # Toggle to indicate use of a custom theme
+    # Toggle to indicate use of the Stanford theming system
     'USE_CUSTOM_THEME': False,
 
     # Don't autoplay videos for students
@@ -235,10 +226,6 @@ FEATURES = {
 
     # for load testing
     'AUTOMATIC_AUTH_FOR_TESTING': False,
-
-    # Toggle to enable chat availability (configured on a per-course
-    # basis in Studio)
-    'ENABLE_CHAT': False,
 
     # Allow users to enroll with methods other than just honor code certificates
     'MULTIPLE_ENROLLMENT_ROLES': False,
@@ -336,8 +323,7 @@ FEATURES = {
     'ENABLE_MOBILE_REST_API': False,
     'ENABLE_MOBILE_SOCIAL_FACEBOOK_FEATURES': False,
 
-    # Enable APIs required for xBlocks on Mobile, and supported in general
-    'ENABLE_RENDER_XBLOCK_API': False,
+    # Enable temporary APIs required for xBlocks on Mobile
     'ENABLE_COURSE_BLOCKS_NAVIGATION_API': False,
 
     # Enable the combined login/registration form
@@ -396,23 +382,13 @@ FEATURES = {
     # Batch-Generated Certificates from Instructor Dashboard
     'CERTIFICATES_INSTRUCTOR_GENERATION': False,
 
-    # Social Media Sharing on Student Dashboard
-    'SOCIAL_SHARING_SETTINGS': {
-        # Note: Ensure 'CUSTOM_COURSE_URLS' has a matching value in cms/envs/common.py
-        'CUSTOM_COURSE_URLS': False,
-        'DASHBOARD_FACEBOOK': False,
-        'CERTIFICATE_FACEBOOK': False,
-        'CERTIFICATE_FACEBOOK_TEXT': None,
-        'CERTIFICATE_TWITTER': False,
-        'CERTIFICATE_TWITTER_TEXT': None,
-        'DASHBOARD_TWITTER': False,
-        'DASHBOARD_TWITTER_TEXT': None
-    },
-
     'ENABLE_PROGRESS_SUMMARY': True,
 
     # Course discovery feature
     'ENABLE_COURSE_DISCOVERY': False,
+
+    # Setting for overriding default filtering facets for Course discovery
+    # COURSE_DISCOVERY_FILTERS = ["org", "language", "modes"]
 
     # Software secure fake page feature flag
     'ENABLE_SOFTWARE_SECURE_FAKE': False,
@@ -426,14 +402,14 @@ FEATURES = {
     # How many seconds to show the bumper again, default is 7 days:
     'SHOW_BUMPER_PERIODICITY': 7 * 24 * 3600,
 
-    # Timed Proctored Exams
-    'ENABLE_PROCTORED_EXAMS': False,
+    # Special Exams, aka Timed and Proctored Exams
+    'ENABLE_SPECIAL_EXAMS': False,
 
     # Enable OpenBadge support. See the BADGR_* settings later in this file.
     'ENABLE_OPENBADGES': False,
 
     # Credit course API
-    'ENABLE_CREDIT_API': False,
+    'ENABLE_CREDIT_API': True,
 
     # The block types to disable need to be specified in "x block disable config" in django admin.
     'ENABLE_DISABLING_XBLOCK_TYPES': True,
@@ -469,6 +445,9 @@ ENV_ROOT = REPO_ROOT.dirname()  # virtualenv dir /edx-platform is in
 COURSES_ROOT = ENV_ROOT / "data"
 
 DATA_DIR = COURSES_ROOT
+
+# comprehensive theming system
+COMP_THEME_DIR = ""
 
 # TODO: Remove the rest of the sys.path modification here and in cms/envs/common.py
 sys.path.append(REPO_ROOT)
@@ -631,6 +610,7 @@ USAGE_ID_PATTERN = r'(?P<usage_id>(?:i4x://?[^/]+/[^/]+/[^/]+/[^@]+(?:@[^/]+)?)|
 
 
 ############################## EVENT TRACKING #################################
+LMS_SEGMENT_KEY = None
 
 # FIXME: Should we be doing this truncation?
 TRACK_MAX_EVENT = 50000
@@ -823,6 +803,7 @@ DEBUG = False
 TEMPLATE_DEBUG = False
 USE_TZ = True
 SESSION_COOKIE_SECURE = False
+SESSION_SAVE_EVERY_REQUEST = False
 
 # CMS base
 CMS_BASE = 'localhost:8001'
@@ -1149,13 +1130,6 @@ CREDIT_NOTIFICATION_CACHE_TIMEOUT = 5 * 60 * 60
 simplefilter('ignore')
 
 ################################# Middleware ###################################
-# List of finder classes that know how to find static files in
-# various locations.
-STATICFILES_FINDERS = (
-    'staticfiles.finders.FileSystemFinder',
-    'staticfiles.finders.AppDirectoriesFinder',
-    'pipeline.finders.PipelineFinder',
-)
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -1246,26 +1220,65 @@ MIDDLEWARE_CLASSES = (
 # Clickjacking protection can be enabled by setting this to 'DENY'
 X_FRAME_OPTIONS = 'ALLOW'
 
-############################### Pipeline #######################################
+############################### PIPELINE #######################################
 
+PIPELINE_ENABLED = True
+
+# Process static files using RequireJS Optimizer
 STATICFILES_STORAGE = 'openedx.core.lib.django_require.staticstorage.OptimizedCachedRequireJsStorage'
+
+# List of finder classes that know how to find static files in various locations.
+# Note: the pipeline finder is included to be able to discover optimized files
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'pipeline.finders.PipelineFinder',
+]
+
+PIPELINE_CSS_COMPRESSOR = None
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.uglifyjs.UglifyJSCompressor'
+
+# Setting that will only affect the edX version of django-pipeline until our changes are merged upstream
+PIPELINE_COMPILE_INPLACE = True
+
+# Don't wrap JavaScript as there is code that depends upon updating the global namespace
+PIPELINE_DISABLE_WRAPPER = True
+
+# Specify the UglifyJS binary to use
+PIPELINE_UGLIFYJS_BINARY = 'node_modules/.bin/uglifyjs'
 
 from openedx.core.lib.rooted_paths import rooted_glob
 
 courseware_js = (
     [
         'coffee/src/' + pth + '.js'
-        for pth in ['courseware', 'histogram', 'navigation', 'time']
+        for pth in ['courseware', 'histogram', 'navigation']
     ] +
     ['js/' + pth + '.js' for pth in ['ajax-error']] +
     sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/modules/**/*.js'))
 )
 
 proctoring_js = (
-    ['proctoring/js/models/*.js'] +
-    ['proctoring/js/collections/*.js'] +
-    ['proctoring/js/views/*.js'] +
-    ['proctoring/js/*.js']
+    [
+        'proctoring/js/models/proctored_exam_allowance_model.js',
+        'proctoring/js/models/proctored_exam_attempt_model.js',
+        'proctoring/js/models/proctored_exam_model.js'
+    ] +
+    [
+        'proctoring/js/collections/proctored_exam_allowance_collection.js',
+        'proctoring/js/collections/proctored_exam_attempt_collection.js',
+        'proctoring/js/collections/proctored_exam_collection.js'
+    ] +
+    [
+        'proctoring/js/views/Backbone.ModalDialog.js',
+        'proctoring/js/views/proctored_exam_add_allowance_view.js',
+        'proctoring/js/views/proctored_exam_allowance_view.js',
+        'proctoring/js/views/proctored_exam_attempt_view.js',
+        'proctoring/js/views/proctored_exam_view.js'
+    ] +
+    [
+        'proctoring/js/proctored_app.js'
+    ]
 )
 
 # Before a student accesses courseware, we do not
@@ -1292,7 +1305,6 @@ main_vendor_js = base_vendor_js + [
     'js/vendor/json2.js',
     'js/vendor/jquery-ui.min.js',
     'js/vendor/jquery.qtip.min.js',
-    'js/vendor/swfobject/swfobject.js',
     'js/vendor/jquery.ba-bbq.min.js',
 ]
 
@@ -1336,26 +1348,6 @@ instructor_dash_js = (
     sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/instructor_dashboard/**/*.js')) +
     sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/instructor_dashboard/**/*.js'))
 )
-
-# JavaScript used by the student account and profile pages
-# These are not courseware, so they do not need many of the courseware-specific
-# JavaScript modules.
-student_account_js = [
-    'js/utils/edx.utils.validate.js',
-    'js/sticky_filter.js',
-    'js/query-params.js',
-    'js/student_account/models/LoginModel.js',
-    'js/student_account/models/RegisterModel.js',
-    'js/student_account/models/PasswordResetModel.js',
-    'js/student_account/views/FormView.js',
-    'js/student_account/views/LoginView.js',
-    'js/student_account/views/HintedLoginView.js',
-    'js/student_account/views/RegisterView.js',
-    'js/student_account/views/PasswordResetView.js',
-    'js/student_account/views/AccessView.js',
-    'js/student_account/views/InstitutionLoginView.js',
-    'js/student_account/accessApp.js',
-]
 
 verify_student_js = [
     'js/sticky_filter.js',
@@ -1461,14 +1453,12 @@ PIPELINE_CSS = {
     'style-course': {
         'source_filenames': [
             'css/lms-course.css',
-            'xmodule/modules.css',
         ],
         'output_filename': 'css/lms-course.css',
     },
     'style-course-rtl': {
         'source_filenames': [
             'css/lms-course-rtl.css',
-            'xmodule/modules.css',
         ],
         'output_filename': 'css/lms-course-rtl.css',
     },
@@ -1552,6 +1542,7 @@ PIPELINE_JS = {
         'source_filenames': ['js/xblock/core.js'] + sorted(common_js) + sorted(project_js) + base_application_js + [
             'js/sticky_filter.js',
             'js/query-params.js',
+            'js/vendor/moment.min.js',
         ],
         'output_filename': 'js/lms-application.js',
     },
@@ -1607,10 +1598,6 @@ PIPELINE_JS = {
         'source_filenames': dashboard_js,
         'output_filename': 'js/dashboard.js'
     },
-    'student_account': {
-        'source_filenames': student_account_js,
-        'output_filename': 'js/student_account.js'
-    },
     'verify_student': {
         'source_filenames': verify_student_js,
         'output_filename': 'js/verify_student.js'
@@ -1641,8 +1628,6 @@ PIPELINE_JS = {
     }
 }
 
-PIPELINE_DISABLE_WRAPPER = True
-
 # Compile all coffee files in course data directories if they are out of date.
 # TODO: Remove this once we move data into Mongo. This is only temporary while
 # course data directories are still in use.
@@ -1663,24 +1648,30 @@ if os.path.isdir(DATA_DIR):
                 os.system("coffee -c %s" % (js_dir / filename))
 
 
-PIPELINE_CSS_COMPRESSOR = None
-PIPELINE_JS_COMPRESSOR = "pipeline.compressors.uglifyjs.UglifyJSCompressor"
-
 STATICFILES_IGNORE_PATTERNS = (
-    "sass/*",
+    "*.py",
+    "*.pyc",
+
+    # It would be nice if we could do, for example, "**/*.scss",
+    # but these strings get passed down to the `fnmatch` module,
+    # which doesn't support that. :(
+    # http://docs.python.org/2/library/fnmatch.html
+    "sass/*.scss",
+    "sass/*/*.scss",
+    "sass/*/*/*.scss",
+    "sass/*/*/*/*.scss",
     "coffee/*.coffee",
     "coffee/*/*.coffee",
     "coffee/*/*/*.coffee",
     "coffee/*/*/*/*.coffee",
 
+    # Ignore tests
+    "spec",
+    "spec_helpers",
+
     # Symlinks used by js-test-tool
     "xmodule_js",
 )
-
-PIPELINE_UGLIFYJS_BINARY = 'node_modules/.bin/uglifyjs'
-
-# Setting that will only affect the edX version of django-pipeline until our changes are merged upstream
-PIPELINE_COMPILE_INPLACE = True
 
 
 ################################# DJANGO-REQUIRE ###############################
@@ -1848,6 +1839,9 @@ INSTALLED_APPS = (
     'settings_context_processor',
     'south',
 
+    # Common views
+    'openedx.core.djangoapps.common_views',
+
     # History tables
     'simple_history',
 
@@ -1863,11 +1857,13 @@ INSTALLED_APPS = (
     # For asset pipelining
     'edxmako',
     'pipeline',
-    'staticfiles',
+    'django.contrib.staticfiles',
     'static_replace',
 
+    # Theming
+    'openedx.core.djangoapps.theming',
+
     # Our courseware
-    'circuit',
     'courseware',
     'student',
 
@@ -1898,6 +1894,12 @@ INSTALLED_APPS = (
     'provider',
     'provider.oauth2',
     'oauth2_provider',
+
+    # We don't use this directly (since we use OAuth2), but we need to install it anyway.
+    # When a user is deleted, Django queries all tables with a FK to the auth_user table,
+    # and since django-rest-framework-oauth imports this, it will try to access tables
+    # defined by oauth_provider.  If those tables don't exist, an error can occur.
+    'oauth_provider',
 
     'auth_exchange',
 
@@ -1994,8 +1996,12 @@ INSTALLED_APPS = (
 
     'lms.djangoapps.lms_xblock',
 
+    # Course data caching
     'openedx.core.djangoapps.content.course_overviews',
     'openedx.core.djangoapps.content.course_structures',
+    'lms.djangoapps.course_blocks',
+
+    # Old course structure API
     'course_structure_api',
 
     # Mailchimp Syncing
@@ -2014,12 +2020,26 @@ INSTALLED_APPS = (
     'teams',
 
     'xblock_django',
+
+    # programs support
+    'openedx.core.djangoapps.programs',
+
+    # Self-paced course configuration
+    'openedx.core.djangoapps.self_paced',
 )
 
 ######################### CSRF #########################################
 
 # Forwards-compatibility with Django 1.7
 CSRF_COOKIE_AGE = 60 * 60 * 24 * 7 * 52
+
+
+######################### Django Rest Framework ########################
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'openedx.core.lib.api.paginators.DefaultPagination',
+    'PAGE_SIZE': 10,
+}
 
 
 ######################### MARKETING SITE ###############################
@@ -2050,6 +2070,20 @@ MKTG_URL_LINK_MAP = {
 TEMPLATE_VISIBLE_SETTINGS = [
     'FEATURES',
 ]
+
+############################# SOCIAL MEDIA SHARING #############################
+# Social Media Sharing on Student Dashboard
+SOCIAL_SHARING_SETTINGS = {
+    # Note: Ensure 'CUSTOM_COURSE_URLS' has a matching value in cms/envs/common.py
+    'CUSTOM_COURSE_URLS': False,
+    'DASHBOARD_FACEBOOK': False,
+    'CERTIFICATE_FACEBOOK': False,
+    'CERTIFICATE_FACEBOOK_TEXT': None,
+    'CERTIFICATE_TWITTER': False,
+    'CERTIFICATE_TWITTER_TEXT': None,
+    'DASHBOARD_TWITTER': False,
+    'DASHBOARD_TWITTER_TEXT': None
+}
 
 ################# Social Media Footer Links #######################
 # The names list controls the order of social media
@@ -2157,7 +2191,7 @@ if FEATURES.get('CLASS_DASHBOARD'):
     INSTALLED_APPS += ('class_dashboard',)
 
 ################ Enable credit eligibility feature ####################
-ENABLE_CREDIT_ELIGIBILITY = False
+ENABLE_CREDIT_ELIGIBILITY = True
 FEATURES['ENABLE_CREDIT_ELIGIBILITY'] = ENABLE_CREDIT_ELIGIBILITY
 
 ######################## CAS authentication ###########################
@@ -2200,6 +2234,43 @@ REGISTRATION_EXTRA_FIELDS = {
     'terms_of_service': 'hidden',
     'city': 'hidden',
     'country': 'hidden',
+}
+REGISTRATION_FOOTER_DISCLAIMER = {
+    'institution_name': PLATFORM_NAME,
+    'institution_name_short': PLATFORM_NAME,
+    'institution_name_general': 'Institution',
+    'platform_name_on_tos': PLATFORM_NAME,
+    'html': _(
+        "{paragraph_start}{institution_name} pursues the science of "
+        "learning.  Online learners are important participants in that "
+        "pursuit. The information we gather from your engagement with our "
+        "instructional offerings makes it possible for faculty, "
+        "researchers, designers and engineers to continuously improve "
+        "their work and, in that process, build learning science.{paragraph_end}"
+        "{paragraph_start}By registering as an online learner, you are "
+        "also participating in research intended to enhance "
+        "{institution_name_short}'s instructional offerings as well as "
+        "the quality of learning and related sciences worldwide. In the "
+        "interest of research, you may be exposed to some variations in "
+        "the course materials.  {institution_name_short} does not use "
+        "learner data for any purpose beyond the "
+        "{institution_name_general}'s stated missions of education and "
+        "research. For purposes of research, we may share information we "
+        "collect from online learning activities, including "
+        "{pii_link_start}Personally Identifiable Information{link_end}, "
+        "with researchers beyond {institution_name_short}. However, your "
+        "Personally Identifiable Information will only be shared as "
+        "permitted by applicable law, will be limited to what is "
+        "necessary to perform the research, and will be subject to an "
+        "agreement to protect the data. We may also share with the public "
+        "or third parties aggregated information that does not personally "
+        "identify you. Similarly, any research findings will be reported "
+        "at the aggregate level and will not expose your personal "
+        "identity.{paragraph_end}{paragraph_start}Please read our "
+        "{privacy_link_start}Privacy Policy{link_end} for more "
+        "information regarding the processing, transmission and use of "
+        "data collected through the {platform_name_on_tos} platform.{paragraph_end}"
+    ),
 }
 
 ########################## CERTIFICATE NAME ########################
@@ -2646,12 +2717,14 @@ ACCOUNT_VISIBILITY_CONFIGURATION = {
         'time_zone',
         'language_proficiencies',
         'bio',
+        'account_privacy',
     ],
 
     # The list of account fields that are always public
     "public_fields": [
         'username',
         'profile_image',
+        'account_privacy',
     ],
 
     # The list of account fields that are visible only to staff and users viewing their own profiles
@@ -2671,6 +2744,7 @@ ACCOUNT_VISIBILITY_CONFIGURATION = {
         "level_of_education",
         "mailing_address",
         "requires_parental_consent",
+        "account_privacy",
     ]
 }
 
@@ -2679,6 +2753,7 @@ ECOMMERCE_PUBLIC_URL_ROOT = None
 ECOMMERCE_API_URL = None
 ECOMMERCE_API_SIGNING_KEY = None
 ECOMMERCE_API_TIMEOUT = 5
+ECOMMERCE_SERVICE_WORKER_USERNAME = 'ecommerce_worker'
 
 # Reverification checkpoint name pattern
 CHECKPOINT_PATTERN = r'(?P<checkpoint_name>[^/]+)'
@@ -2751,6 +2826,18 @@ CREDIT_HELP_LINK_URL = "#"
 # route any messages intended for LTI users to a common domain.
 LTI_USER_EMAIL_DOMAIN = 'lti.example.com'
 
+# An aggregate score is one derived from multiple problems (such as the
+# cumulative score for a vertical element containing many problems). Sending
+# aggregate scores immediately introduces two issues: one is a race condition
+# between the view method and the Celery task where the updated score may not
+# yet be visible to the database if the view has not yet returned (and committed
+# its transaction). The other is that the student is likely to receive a stream
+# of notifications as the score is updated with every problem. Waiting a
+# reasonable period of time allows the view transaction to end, and allows us to
+# collapse multiple score updates into a single message.
+# The time value is in seconds.
+LTI_AGGREGATE_SCORE_PASSBACK_DELAY = 15 * 60
+
 # Number of seconds before JWT tokens expire
 JWT_EXPIRATION = 30
 JWT_ISSUER = None
@@ -2772,3 +2859,8 @@ STUDENT_RESPONSES_REPORT_SUPPORTED_TYPES = set([
     'submit-and-compare',
     'freetextresponse',
 ])
+
+# These types are children of children of units.
+TYPES_WITH_CHILD_PROBLEMS_LIST = [
+    'library_content',
+]

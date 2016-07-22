@@ -1,7 +1,9 @@
 import json
 import logging
 import traceback
+
 from lxml import etree
+
 from xmodule.timeinfo import TimeInfo
 from xmodule.capa_module import ComplexEncoder
 from xmodule.progress import Progress
@@ -34,12 +36,14 @@ ACCEPT_FILE_UPLOAD = False
 # Contains all reasonable bool and case combinations of True
 TRUE_DICT = ["True", True, "TRUE", "true"]
 
+# Make '_' a no-op so we can scrape strings. Using lambda instead of
+#  `django.utils.translation.ugettext_noop` because Django cannot be imported in this file
 _ = lambda text: text
 
 HUMAN_TASK_TYPE = {
     # Translators: "Self" is used to denote an openended response that is self-graded
-    'selfassessment': _("Self Assessment"),
-    'openended': "Reviewed Assessment",
+    'selfassessment': _("Self"),
+    'openended': "edX",
     # Translators: "AI" is used to denote an openended response that is machine-graded
     'ml_grading.conf': _("AI"),
     # Translators: "Peer" is used to denote an openended response that is peer-graded

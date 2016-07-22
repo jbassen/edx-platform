@@ -51,11 +51,10 @@ class InterceptErrorsTest(TestCase):
 
     @mock.patch('openedx.core.djangoapps.user_api.helpers.LOGGER')
     def test_logs_errors(self, mock_logger):
+        exception = 'openedx.core.djangoapps.user_api.tests.test_helpers.FakeInputException'
         expected_log_msg = (
-            u"An unexpected error occurred when calling 'intercepted_function' "
-            u"with arguments '()' and "
-            u"keyword arguments '{'raise_error': <class 'openedx.core.djangoapps.user_api.tests.test_helpers.FakeInputException'>}': "
-            u"FakeInputException()"
+            u"An unexpected error occurred when calling 'intercepted_function' with arguments '()' and "
+            u"keyword arguments '{'raise_error': <class '" + exception + u"'>}': FakeInputException()"
         )
 
         # Verify that the raised exception has the error message
@@ -186,6 +185,21 @@ class StudentViewShimTest(TestCase):
         response = view(HttpRequest())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "")
+
+    def test_shib_redirect_from_json(self):
+        url = '/shib-login/'
+        view = self._shimmed_view(
+            HttpResponse(
+                status=418,
+                content=json.dumps({
+                    'success': True,
+                    'redirect': url,
+                }),
+            )
+        )
+        response = view(HttpRequest())
+        self.assertEqual(response.status_code, 418)
+        self.assertEqual(response.content, url)
 
     def test_error_from_json(self):
         view = self._shimmed_view(

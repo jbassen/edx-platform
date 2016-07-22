@@ -2,37 +2,40 @@
 Tests for instructor.basic
 """
 
+import datetime
+import json
+import pytz
+from mock import MagicMock, Mock, patch
+from django.core.urlresolvers import reverse
+from django.db.models import Q
+
+from course_modes.models import CourseMode
 from courseware.courses import get_course
+from courseware.tests.factories import InstructorFactory
 from courseware.tests.factories import StudentModuleFactory
-from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase, TEST_DATA_MIXED_GRADED_MODULESTORE
+from instructor_analytics.basic import (
+    StudentModule, sale_record_features, sale_order_record_features, enrolled_students_features,
+    course_registration_features, coupon_codes_features, get_proctored_exam_results, list_may_enroll,
+    list_problem_responses, AVAILABLE_FEATURES, STUDENT_FEATURES, PROFILE_FEATURES
+)
+from instructor_analytics.basic import student_responses
 from opaque_keys.edx.keys import CourseKey
 from opaque_keys.edx.locations import Location
-
-import json
-import datetime
-from django.db.models import Q
-import pytz
+from opaque_keys.edx.locator import UsageKey
+from openedx.core.djangoapps.course_groups.tests.helpers import CohortFactory
 from student.models import CourseEnrollment, CourseEnrollmentAllowed
-from django.core.urlresolvers import reverse
-from mock import patch
 from student.roles import CourseSalesAdminRole
 from student.tests.factories import UserFactory, CourseModeFactory
 from shoppingcart.models import (
     CourseRegistrationCode, RegistrationCodeRedemption, Order,
     Invoice, Coupon, CourseRegCodeItem, CouponRedemption, CourseRegistrationCodeInvoiceItem
 )
-from course_modes.models import CourseMode
-from instructor_analytics.basic import (
-    sale_record_features, sale_order_record_features, enrolled_students_features,
-    course_registration_features, coupon_codes_features, list_may_enroll,
-    AVAILABLE_FEATURES, STUDENT_FEATURES, PROFILE_FEATURES,
-    get_proctored_exam_results)
-from instructor_analytics.basic import student_responses
-from openedx.core.djangoapps.course_groups.tests.helpers import CohortFactory
-from courseware.tests.factories import InstructorFactory
-from xmodule.modulestore.tests.factories import CourseFactory
+from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
+from xmodule.modulestore.tests.django_utils import TEST_DATA_MIXED_GRADED_MODULESTORE
+from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 from edx_proctoring.api import create_exam
 from edx_proctoring.models import ProctoredExamStudentAttempt
+from xmodule.modulestore.django import modulestore
 
 
 class TestAnalyticsBasic(ModuleStoreTestCase):
@@ -56,6 +59,48 @@ class TestAnalyticsBasic(ModuleStoreTestCase):
             CourseEnrollmentAllowed.objects.create(
                 email=student.email, course_id=self.course_key
             )
+
+    def test_list_problem_responses(self):
+        def result_factory(result_id):
+            """
+            Return a dummy StudentModule object that can be queried for
+            relevant info (student.username and state).
+            """
+            result = Mock(spec=['student', 'state'])
+            result.student.username.return_value = u'user{}'.format(result_id)
+            result.state.return_value = u'state{}'.format(result_id)
+            return result
+
+        # Ensure that UsageKey.from_string returns a problem key that list_problem_responses can work with
+        # (even when called with a dummy location):
+        mock_problem_key = Mock(return_value=u'')
+        mock_problem_key.course_key = self.course_key
+        with patch.object(UsageKey, 'from_string') as patched_from_string:
+            patched_from_string.return_value = mock_problem_key
+
+            # Ensure that StudentModule.objects.filter returns a result set that list_problem_responses can work with
+            # (this keeps us from having to create fixtures for this test):
+            mock_results = MagicMock(return_value=[result_factory(n) for n in range(5)])
+            with patch.object(StudentModule, 'objects') as patched_manager:
+                patched_manager.filter.return_value = mock_results
+
+                mock_problem_location = ''
+                problem_responses = list_problem_responses(self.course_key, problem_location=mock_problem_location)
+
+                # Check if list_problem_responses called UsageKey.from_string to look up problem key:
+                patched_from_string.assert_called_once_with(mock_problem_location)
+                # Check if list_problem_responses called StudentModule.objects.filter to obtain relevant records:
+                patched_manager.filter.assert_called_once_with(
+                    course_id=self.course_key, module_state_key=mock_problem_key
+                )
+
+                # Check if list_problem_responses returned expected results:
+                self.assertEqual(len(problem_responses), len(mock_results))
+                for mock_result in mock_results:
+                    self.assertTrue(
+                        {'username': mock_result.student.username, 'state': mock_result.state} in
+                        problem_responses
+                    )
 
     def test_enrolled_students_features_username(self):
         self.assertIn('username', AVAILABLE_FEATURES)
@@ -136,17 +181,13 @@ class TestAnalyticsBasic(ModuleStoreTestCase):
 
     def test_get_student_exam_attempt_features(self):
         query_features = [
-            'created',
-            'modified',
-            'started_at',
-            'exam_name',
             'user_email',
-            'completed_at',
-            'external_id',
+            'exam_name',
             'allowed_time_limit_mins',
-            'status',
-            'attempt_code',
             'is_sample_attempt',
+            'started_at',
+            'completed_at',
+            'status',
         ]
 
         proctored_exam_id = create_exam(self.course_key, 'Test Content', 'Test Exam', 1)
@@ -533,39 +574,87 @@ class TestStudentResponsesAnalyticsBasic(ModuleStoreTestCase):
         self.assertEqual(len(datarows), 0)
 
     def test_problem_with_student_answer_and_answers(self):
-        self.course = get_course(CourseKey.from_string('edX/graded/2012_Fall'))
-        problem_location = Location('edX', 'graded', '2012_Fall', 'problem', 'H1P2')
+        self.course = CourseFactory.create(
+            display_name=u'test course',
+        )
+        section = ItemFactory.create(
+            parent_location=self.course.location,
+            category='chapter',
+            display_name=u'test section',
+        )
+        sub_section = ItemFactory.create(
+            parent_location=section.location,
+            category='sequential',
+            display_name=u'test subsection',
+        )
+        unit = ItemFactory.create(
+            parent_location=sub_section.location,
+            category="vertical",
+            metadata={'graded': True, 'format': 'Homework'},
+            display_name=u'test unit',
+        )
+        problem = ItemFactory.create(
+            parent_location=unit.location,
+            category='problem',
+            display_name=u'test problem',
+        )
+        submit_and_compare_valid_state = ItemFactory.create(
+            parent_location=unit.location,
+            category='submit-and-compare',
+            display_name=u'test submit_and_compare1',
+        )
+        submit_and_compare_invalid_state = ItemFactory.create(
+            parent_location=unit.location,
+            category='submit-and-compare',
+            display_name=u'test submit_and_compare2',
+        )
+        content_library = ItemFactory.create(
+            parent_location=unit.location,
+            category='library_content',
+            display_name=u'test content_library',
+        )
+        library_problem = ItemFactory.create(
+            parent_location=content_library.location,
+            category='problem',
+        )
 
         self.create_student()
+
         StudentModuleFactory.create(
             course_id=self.course.id,
-            module_state_key=problem_location,
+            module_state_key=problem.location,
             student=self.student,
             grade=0,
             state=u'{"student_answers":{"problem_id":"student response1"}}',
         )
-
-        submit_and_compare_location = Location('edX', 'graded', '2012_Fall', 'problem', 'H1P3')
         StudentModuleFactory.create(
             course_id=self.course.id,
-            module_state_key=submit_and_compare_location,
+            module_state_key=submit_and_compare_valid_state.location,
             student=self.student,
-            grade=0,
+            grade=1,
             state=u'{"student_answer": "student response2"}',
         )
-
-        submit_and_compare_location = Location("edX", "graded", "2012_Fall", "problem", 'H1P0')
         StudentModuleFactory.create(
             course_id=self.course.id,
-            module_state_key=submit_and_compare_location,
+            module_state_key=submit_and_compare_invalid_state.location,
             student=self.student,
-            grade=0,
+            grade=1,
             state=u'{"answer": {"problem_id": "123"}}',
         )
+        StudentModuleFactory.create(
+            course_id=self.course.id,
+            module_state_key=library_problem.location,
+            student=self.student,
+            grade=0,
+            state=u'{"student_answers":{"problem_id":"content library response1"}}',
+        )
 
-        datarows = list(student_responses(self.course))
+        course_with_children = modulestore().get_course(self.course.id, depth=4)
+        datarows = list(student_responses(course_with_children))
         self.assertEqual(datarows[0][-1], u'problem_id=student response1')
         self.assertEqual(datarows[1][-1], u'student response2')
+        self.assertEqual(datarows[2][-1], None)
+        self.assertEqual(datarows[3][-1], u'problem_id=content library response1')
 
     def test_problem_with_no_answer(self):
         self.course = get_course(CourseKey.from_string('edX/graded/2012_Fall'))

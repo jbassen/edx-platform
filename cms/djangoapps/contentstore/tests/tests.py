@@ -23,6 +23,8 @@ from pytz import UTC
 
 from freezegun import freeze_time
 
+from student.views import LOGIN_LOCKOUT_PERIOD_PLUS_FIVE_MINUTES
+
 
 class ContentStoreTestCase(ModuleStoreTestCase):
     def _login(self, email, password):
@@ -111,7 +113,7 @@ class AuthTestCase(ContentStoreTestCase):
             reverse('signup'),
         )
         for page in pages:
-            print("Checking '{0}'".format(page))
+            print "Checking '{0}'".format(page)
             self.check_page_get(page, 200)
 
     def test_create_account_errors(self):
@@ -203,7 +205,13 @@ class AuthTestCase(ContentStoreTestCase):
             data = parse_json(resp)
             self.assertFalse(data['success'])
             self.assertIn(
-                'This account has been temporarily locked due to excessive login failures. Try again later.',
+                (
+                    "This account has been temporarily locked due to excessive login failures. "
+                    "Try again in {minutes} minute(s).  For security reasons, "
+                    "reseting the password will NOT lift the lockout. Please wait for {minutes} minute(s)."
+                ).format(
+                    minutes=LOGIN_LOCKOUT_PERIOD_PLUS_FIVE_MINUTES,
+                ),
                 data['value']
             )
 
@@ -254,17 +262,17 @@ class AuthTestCase(ContentStoreTestCase):
         self.client = AjaxEnabledTestClient()
 
         # Not logged in.  Should redirect to login.
-        print('Not logged in')
+        print 'Not logged in'
         for page in auth_pages:
-            print("Checking '{0}'".format(page))
+            print "Checking '{0}'".format(page)
             self.check_page_get(page, expected=302)
 
         # Logged in should work.
         self.login(self.email, self.pw)
 
-        print('Logged in')
+        print 'Logged in'
         for page in simple_auth_pages:
-            print("Checking '{0}'".format(page))
+            print "Checking '{0}'".format(page)
             self.check_page_get(page, expected=200)
 
     def test_index_auth(self):
