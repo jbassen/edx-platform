@@ -4,6 +4,7 @@ consist primarily of authentication, request validation, and serialization.
 
 """
 import logging
+import json
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.decorators import method_decorator
@@ -278,6 +279,44 @@ class EnrollmentCourseDetailView(APIView):
             )
 
 
+class EnrollmentCourseRosterView(APIView, ApiKeyPermissionMixIn):
+
+    authentication_classes = OAuth2AuthenticationAllowInactiveUser, EnrollmentCrossDomainSessionAuth
+    permission_classes = ApiKeyHeaderPermissionIsAuthenticated,
+
+    @method_decorator(ensure_csrf_cookie_cross_domain)
+    def get(self, request, course_id=None):
+
+        if not course_id:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"message": u"Course ID must be specified to create a new enrollment."}
+            )
+
+        try:
+            course_key = CourseKey.from_string(course_id)
+        except InvalidKeyError:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "message": u"No course '{course_id}' found for enrollment".format(course_id=course_id)
+                }
+            )
+
+        if not user_has_role(request.user, CourseStaffRole(course_key)):
+            return Response(
+                status=status.HTTP_403_FORBIDDEN,
+                data={
+                    "message": u"User does not have permission to view roster for [{course_id}].".format(
+                        course_id=course_id
+                    )
+                }
+            )
+
+        roster = api.get_roster(course_id)
+        return Response( data=json.dumps({'roster': roster}) )
+
+
 @can_disable_rate_limit
 class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
     """
@@ -503,7 +542,7 @@ class EnrollmentListView(APIView, ApiKeyPermissionMixIn):
         username = request.data.get('user', request.user.username)
         course_id = request.data.get('course_details', {}).get('course_id')
 
-        if not course_id:
+        if not username or not course_id:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"message": u"Course ID must be specified to create a new enrollment."}
