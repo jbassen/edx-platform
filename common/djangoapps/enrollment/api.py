@@ -133,33 +133,8 @@ def get_enrollment(user_id, course_id):
 
 
 def get_roster(course_id):
-    """Retrieves username, email, name, and global anonymous_user_id
-    (not the course-specific anonymous_user_id) for users enrolled in a course.
-
-    Args:
-        course_id (str): The course to get roster information for.
-
-    Returns:
-        A list of serializable dictionaries for each enrolled student.
-
-    Example:
-        >>> get_roster("edX/DemoX/2014T2")
-        {
-            "roster": [
-                {
-                    "anonymous_user_id": "anon1",
-                    "username": "uname1",
-                    "email": "uname1@email.com",
-                    "name": "First Last"
-                },
-                {
-                    "anonymous_user_id": "anon2",
-                    "username": "uname2",
-                    "email": "uname2@email.com",
-                    "name": "Given Surname"
-                }
-            ]
-        }
+    """
+    Retrieve a list of users enrolled in a course
     """
     return _data_api().get_roster(course_id)
 

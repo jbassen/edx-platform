@@ -13,12 +13,13 @@ from enrollment.errors import (
 )
 from enrollment.serializers import CourseEnrollmentSerializer, CourseSerializer
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
+from student.auth import user_has_role
 from student.models import (
     CourseEnrollment, NonExistentCourseError, EnrollmentClosedError,
-    CourseFullError, AlreadyEnrolledError, CourseEnrollmentAttribute,
-    UserProfile, anonymous_id_for_user
+    CourseFullError, AlreadyEnrolledError, CourseEnrollmentAttribute
 )
-from student.auth import user_has_role
+from student.models import UserProfile
+from student.models import anonymous_id_for_user
 from student.roles import CourseStaffRole
 
 
@@ -297,23 +298,26 @@ def get_course_enrollment_info(course_id, include_expired=False):
     else:
         return CourseSerializer(course, include_expired=include_expired).data
 
-
 def get_roster(course_id):
-    roster = []
-
+    """
+    Returns roster with PII of all enrollees in course
+    """
     course_key = CourseKey.from_string(course_id)
-    qset = CourseEnrollment.objects.filter(
+    enrollments = CourseEnrollment.objects.filter(
         course_id=course_key,
-        is_active=True
+        is_active=True,
     ).order_by('user__username')
 
-    roster = [{
-        'anonymous_user_id': anonymous_id_for_user(enrollment.user, None),
-        'user_id': enrollment.user.id,
-        'username': enrollment.user.username,
-        'email': enrollment.user.email,
-        # add name here somehow!!!
-        'mode': enrollment.mode
-    } for enrollment in qset if not user_has_role(enrollment.user, CourseStaffRole(course_key))]
+    roster = [
+        {
+            'anonymous_user_id': anonymous_id_for_user(enrollment.user, None),
+            'user_id': enrollment.user.id,
+            'username': enrollment.user.username,
+            'email': enrollment.user.email,
+            'mode': enrollment.mode,
+            'staff': user_has_role(enrollment.user, CourseStaffRole(course_key)),
+        }
+        for enrollment in enrollments
+    ]
 
     return roster

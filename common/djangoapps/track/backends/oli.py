@@ -13,6 +13,7 @@ from requests_oauthlib import OAuth1Session
 from student.models import anonymous_id_for_user
 from track.backends import BaseBackend
 
+
 LOG = logging.getLogger(__name__)
 
 
@@ -78,7 +79,7 @@ class OLIAnalyticsBackend(BaseBackend):
             return None
 
         problem_id = event_data.get('problem_id')
-        if problem_id is None:
+        if not problem_id:
             LOG.info('problem_id attribute missing from event for OLI service')
             return None
 
@@ -93,7 +94,7 @@ class OLIAnalyticsBackend(BaseBackend):
             return None
 
         timestamp = event.get('time')
-        if timestamp is None:
+        if not timestamp:
             LOG.info('time attribute missing from event for OLI service')
             return None
 
@@ -112,23 +113,24 @@ class OLIAnalyticsBackend(BaseBackend):
                 'grade': grade,
                 'max_grade': max_grade,
                 'timestamp': timestamp.isoformat(),
-            }
+            },
         })
 
-
         endpoint = urljoin(self.url, self.path)
+
         try:
             response = self.oauth.put(endpoint, request_payload_string)
-            if response.status_code == 200:
-                return 'OK'
-            else:
-                LOG.info('OLI analytics service returns error status code: %s.', response.status_code)
-                return 'Error'
         except Exception as error:
             LOG.info(
                 "Unable to send event to OLI analytics service: %s: %s: %s",
                 endpoint,
-                request_payload,
+                request_payload_string,
                 error,
             )
             return None
+
+        if response.status_code == 200:
+            return 'OK'
+        else:
+            LOG.info('OLI analytics service returns error status code: %s.', response.status_code)
+            return 'Error'

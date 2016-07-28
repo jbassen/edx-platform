@@ -8,9 +8,9 @@ from django.conf.urls import patterns, url
 from .views import (
     EnrollmentView,
     EnrollmentListView,
-    EnrollmentCourseDetailView,
-    EnrollmentCourseRosterView
+    EnrollmentCourseDetailView
 )
+from .views import EnrollmentCourseRosterView
 
 USERNAME_PATTERN = '(?P<username>[\w.@+-]+)'
 
