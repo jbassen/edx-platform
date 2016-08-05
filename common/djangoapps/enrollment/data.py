@@ -315,7 +315,7 @@ def get_roster(course_id):
             'username': enrollment.user.username,
             'email': enrollment.user.email,
             'mode': enrollment.mode,
-            'staff': user_has_role(enrollment.user, CourseStaffRole(course_key)),
+            'is_staff': user_has_role(enrollment.user, CourseStaffRole(course_key)),
             'name': UserProfile.objects.get(user=enrollment.user).name,
         }
         for enrollment in enrollments
