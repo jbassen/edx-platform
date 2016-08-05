@@ -283,7 +283,7 @@ class EnrollmentCourseRosterView(APIView, ApiKeyPermissionMixIn):
     """
     Read roster for a particular course. (contains PII)
     """
-    authentication_classes = EnrollmentCrossDomainSessionAuth,
+    authentication_classes = OAuth2AuthenticationAllowInactiveUser,
     permission_classes = ApiKeyHeaderPermissionIsAuthenticated,
 
     @method_decorator(ensure_csrf_cookie_cross_domain)
