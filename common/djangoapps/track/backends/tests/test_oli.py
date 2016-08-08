@@ -256,9 +256,8 @@ def mock_put(_self, _endpoint, _request_payload):
         'result': False,
         'resource_id': 'i4x://edX/DemoX/problem/c554538a57664fac80783b99d9d6da7c',
     })
-    response = {
-        'status_code': 200,
-        'message': 'OK',
-        'payload': payload,
-    }
-    return response
+    mock_response = Mock()
+    mock_response.status_code = 200
+    mock_response.message = 'OK'
+    mock_response.payload = payload
+    return mock_response

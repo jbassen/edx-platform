@@ -120,16 +120,18 @@ class OLIAnalyticsBackend(BaseBackend):
 
         try:
             response = self.oauth.put(endpoint, request_payload_string)
+            status_code = response.status_code
         except Exception as error:
             LOG.info(
-                "Unable to send event to OLI analytics service: %s: %s: %s",
+                "Unable to send event to OLI analytics service: %s: %s: %s: %s",
                 endpoint,
                 request_payload_string,
+                response,
                 error,
             )
             return None
 
-        if response.status_code == 200:
+        if status_code == 200:
             return 'OK'
         else:
             LOG.info('OLI analytics service returns error status code: %s.', response.status_code)
