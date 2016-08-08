@@ -316,10 +316,9 @@ def get_roster(course_id):
             'email': enrollment.user.email,
             'mode': enrollment.mode,
             'is_staff': user_has_role(enrollment.user, CourseStaffRole(course_key)),
-            'name': UserProfile.objects.get(user=enrollment.user).name,
+            'name': getattr(UserProfile.objects.get(user=enrollment.user), 'name', ''),
         }
         for enrollment in enrollments
-        if UserProfile.objects.get(user=enrollment.user)
     ]
 
     return roster

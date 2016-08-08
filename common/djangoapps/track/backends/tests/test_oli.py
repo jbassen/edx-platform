@@ -39,8 +39,8 @@ class TestOLIBackend(TestCase):
             'edX/DemoX/Demo_Course1',
         }
         self.backend = OLIAnalyticsBackend(
-            url='https://openoars.org/',
-            path='edx/events',
+            url='https://example.com/',
+            path='path',
             key='key',
             secret='secret',
             course_ids=course_ids,
