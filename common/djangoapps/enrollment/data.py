@@ -319,6 +319,7 @@ def get_roster(course_id):
             'name': UserProfile.objects.get(user=enrollment.user).name,
         }
         for enrollment in enrollments
+        if UserProfile.objects.get(user=enrollment.user)
     ]
 
     return roster

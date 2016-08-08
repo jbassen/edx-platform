@@ -257,7 +257,7 @@ def mock_put(_self, _endpoint, _request_payload):
         'resource_id': 'i4x://edX/DemoX/problem/c554538a57664fac80783b99d9d6da7c',
     })
     response = {
-        'status': 200,
+        'status_code': 200,
         'message': 'OK',
         'payload': payload,
     }
